@@ -45,6 +45,20 @@ namespace Projects
 
             conf.AddPrivateDependency<ThirdParty.Glad>(target);
 
+            conf.AddPrivateDependency<Platform>(target);
+        }
+    }
+
+    [Generate]
+    class Platform : DefaultProject
+    {
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            base.Configure(conf, target);
+            conf.SetLib();
+
+            conf.AddPrivateDependency<ThirdParty.Glad>(target);
+
             ThirdParty.OpenGL.AddAsDependency(conf, target);
             ThirdParty.SFML.AddAsDependency(conf, target);
         }
