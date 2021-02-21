@@ -19,7 +19,12 @@ namespace Projects
             conf.TargetPath = Constants.OutputPath + @"[target.Name]";
             conf.IntermediatePath = Constants.IntermediatePath + @"[target.Name]\[project.Name]";
 
+            //
+            conf.IncludePaths.Add(Constants.CodePath);
+
+            //
             conf.DisableExceptions();
+            conf.Options.Add(Options.Vc.Compiler.CppLanguageStandard.CPP17);
             conf.Options.Add(Options.Vc.Compiler.RTTI.Disable);
 
             switch (target.Optimization)
@@ -35,6 +40,16 @@ namespace Projects
         }
     }
 
+    [Generate]
+    class Global : DefaultProject
+    {
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            base.Configure(conf, target);
+            conf.SetLib();
+        }
+    }
+    
     [Generate]
     class Launch : DefaultProject
     {

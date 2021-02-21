@@ -157,6 +157,7 @@ namespace Main
             conf.SolutionPath = Constants.GeneratedPath;
 
             conf.AddProject<Projects.Launch>(target);
+            conf.AddProject<Projects.Global>(target);
 
             //Utility.CopyFolderToOutput(target, Constants.AssetsPath);
         }
