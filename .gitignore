@@ -31,6 +31,7 @@
 *.out
 *.app
 
+!sharpmake/Application/*
 generated/
 sharpmake/scripts/.vs/
 sharpmake/scripts/bin/
