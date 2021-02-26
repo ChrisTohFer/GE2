@@ -1,6 +1,7 @@
 #include "Platform/Window.h"
 
 #include <thread>
+#include <iostream>
 
 int main()
 {
@@ -10,7 +11,17 @@ int main()
     Window window;
     while (window.IsOpen())
     {
-        if (window.WasCloseButtonPressed())
+        auto messages = window.TakeMessages();
+
+        //TEMPORARY CODE vvv
+        if (messages.keyEvents.size() != 0)
+            std::cout << "KeyEvents:\t" << messages.keyEvents.size() << std::endl;
+
+        if (messages.mouseEvents.size() != 0)
+            std::cout << "MouseEvents:\t" << messages.mouseEvents.size() << std::endl;
+        //TEMPORARY CODE ^^^
+
+        if (messages.closeButtonPressed)
             window.Close();
 
         using namespace std::chrono_literals;

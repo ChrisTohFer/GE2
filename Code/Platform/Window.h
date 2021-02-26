@@ -1,5 +1,6 @@
 #pragma once
 
+#include "WindowMessages.h"
 #include "Global/Rect.h"
 
 namespace ge2::plat {
@@ -33,10 +34,10 @@ namespace ge2::plat {
 
         void Open(WindowConfig const& = {});
         void Close();
-        bool IsOpen();
+        bool IsOpen() const;
 
-        //Check window events
-        bool WasCloseButtonPressed();
+        //Get window events since last call of TakeMessages()
+        WindowMessages TakeMessages();
 
     private:
         //Pointer to implementation to avoid unnecessary inclusions in header

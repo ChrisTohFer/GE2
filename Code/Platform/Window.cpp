@@ -2,6 +2,22 @@
 
 #include "SFML/Window.hpp"
 #include <thread>
+#include <mutex>
+
+namespace
+{
+    ge2::plat::KeyEvent convert(sf::Event::KeyEvent keyEvent, ge2::plat::KeyEvent::Type type)
+    {
+        return {
+            type,
+            static_cast<ge2::plat::KeyEvent::Key>(static_cast<int>(keyEvent.code)),
+            keyEvent.alt,
+            keyEvent.control,
+            keyEvent.shift,
+            keyEvent.system
+        };
+    }
+}
 
 namespace ge2::plat {
 
@@ -19,10 +35,11 @@ namespace ge2::plat {
         //Thread stuff
         std::thread         m_thread;
         bool                m_looping = false;
-
     public:
+        std::mutex          m_messageMutex;
+
         //Window messaging
-        bool                m_closeButtonPressed = false;
+        WindowMessages      m_messages;
 
         //Other
         WindowConfig        m_config;
@@ -51,14 +68,21 @@ namespace ge2::plat {
         m_impl = nullptr;
     }
 
-    bool Window::IsOpen()
+    bool Window::IsOpen() const
     {
         return m_impl;
     }
 
-    bool Window::WasCloseButtonPressed()
+    WindowMessages Window::TakeMessages()
     {
-        return m_impl ? m_impl->m_closeButtonPressed : false;
+        WindowMessages messages;
+        if (m_impl)
+        {
+            m_impl->m_messageMutex.lock();
+            messages = std::move(m_impl->m_messages);
+            m_impl->m_messageMutex.unlock();
+        }
+        return messages;
     }
 
     //Window::Impl methods
@@ -84,7 +108,9 @@ namespace ge2::plat {
         m_looping = true;
         while (m_looping)
         {
+            m_messageMutex.lock();
             PollEvents(window);
+            m_messageMutex.unlock();
 
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(5ms);
@@ -118,9 +144,21 @@ namespace ge2::plat {
         sf::Event event;
         while (window.pollEvent(event))
         {
-            // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed)
-                m_closeButtonPressed = true;
+            switch (event.type)
+            {
+            case sf::Event::Closed:
+                m_messages.closeButtonPressed = true;
+                break;
+            case sf::Event::KeyPressed:
+                m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::PRESSED));
+                break;
+            case sf::Event::KeyReleased:
+                m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::RELEASED));
+                break;
+
+            default:
+                break;
+            }
         }
     }
 
