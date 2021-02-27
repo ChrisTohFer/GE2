@@ -9,16 +9,16 @@ namespace ge2::plat
         enum class Type
         {
             MOVED,
-            DRAGGED, //not sure if this is an event or not
             PRESSED,
             RELEASED,
-            //Possibly others eg exited
+            ENTERED,
+            EXITED
         };
 
         Type type;
         int button;
-        float x;
-        float y;
+        int x;
+        int y;
     };
 
     struct KeyEvent

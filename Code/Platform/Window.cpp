@@ -6,7 +6,7 @@
 
 namespace
 {
-    ge2::plat::KeyEvent convert(sf::Event::KeyEvent keyEvent, ge2::plat::KeyEvent::Type type)
+    ge2::plat::KeyEvent convert(sf::Event::KeyEvent const& keyEvent, ge2::plat::KeyEvent::Type type)
     {
         return {
             type,
@@ -15,6 +15,15 @@ namespace
             keyEvent.control,
             keyEvent.shift,
             keyEvent.system
+        };
+    }
+    ge2::plat::MouseEvent convert(sf::Event::MouseButtonEvent const& mouseEvent, ge2::plat::MouseEvent::Type type)
+    {
+        return {
+            type,
+            static_cast<int>(mouseEvent.button),
+            mouseEvent.x,
+            mouseEvent.y
         };
     }
 }
@@ -146,8 +155,22 @@ namespace ge2::plat {
         {
             switch (event.type)
             {
+                //Window updates
+
             case sf::Event::Closed:
                 m_messages.closeButtonPressed = true;
+                break;
+            case sf::Event::Resized:
+                break;
+            case sf::Event::LostFocus:
+                break;
+            case sf::Event::GainedFocus:
+                break;
+
+                //Input events (mouse, keyboard)
+
+            case sf::Event::TextEntered:
+                //TODO
                 break;
             case sf::Event::KeyPressed:
                 m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::PRESSED));
@@ -155,6 +178,23 @@ namespace ge2::plat {
             case sf::Event::KeyReleased:
                 m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::RELEASED));
                 break;
+            case sf::Event::MouseButtonPressed:
+                m_messages.mouseEvents.push_back(convert(event.mouseButton, MouseEvent::Type::PRESSED));
+                break;
+            case sf::Event::MouseButtonReleased:
+                m_messages.mouseEvents.push_back(convert(event.mouseButton, MouseEvent::Type::RELEASED));
+                break;
+            case sf::Event::MouseMoved:
+                m_messages.mouseEvents.push_back({ MouseEvent::Type::MOVED, -1, event.mouseMove.x, event.mouseMove.y });
+                break;
+            case sf::Event::MouseEntered:
+                m_messages.mouseEvents.push_back({ MouseEvent::Type::ENTERED });
+                break;
+            case sf::Event::MouseLeft:
+                m_messages.mouseEvents.push_back({ MouseEvent::Type::EXITED });
+                break;
+
+                //
 
             default:
                 break;
