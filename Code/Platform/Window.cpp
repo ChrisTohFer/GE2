@@ -43,7 +43,7 @@ namespace ge2::plat {
 
         //Thread stuff
         std::thread         m_thread;
-        bool                m_looping = false;
+        std::atomic<bool>   m_looping = false;
     public:
         std::mutex          m_messageMutex;
 
@@ -89,6 +89,9 @@ namespace ge2::plat {
         {
             m_impl->m_messageMutex.lock();
             messages = std::move(m_impl->m_messages);
+            m_impl->m_messages.closeButtonPressed = false;    //Possibly should be in move assignment/constructor but this is fine
+            m_impl->m_messages.gainedFocus        = false;
+            m_impl->m_messages.lostFocus          = false;
             m_impl->m_messageMutex.unlock();
         }
         return messages;
@@ -99,6 +102,8 @@ namespace ge2::plat {
     Window::Impl::Impl(WindowConfig const& config)
         : m_config(config)
     {
+        m_messages.width  = config.size.width;
+        m_messages.height = config.size.height;
         m_thread = std::move(std::thread(&Window::Impl::Loop, this));
         while (!m_looping) {};  //Wait until Loop has started before continuing
     }
@@ -161,10 +166,16 @@ namespace ge2::plat {
                 m_messages.closeButtonPressed = true;
                 break;
             case sf::Event::Resized:
+                m_messages.width  = m_config.size.width  = event.size.width;
+                m_messages.height = m_config.size.height = event.size.height;
                 break;
             case sf::Event::LostFocus:
+                m_messages.lostFocus = true;
+                m_messages.hasFocus  = false;
                 break;
             case sf::Event::GainedFocus:
+                m_messages.gainedFocus = true;
+                m_messages.hasFocus    = true;
                 break;
 
                 //Input events (mouse, keyboard)
