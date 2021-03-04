@@ -3,6 +3,11 @@
 #include "WindowMessages.h"
 #include "Global/Rect.h"
 
+namespace sf
+{
+    class Window;
+}
+
 namespace ge2::plat {
 
     struct WindowConfig
@@ -23,7 +28,18 @@ namespace ge2::plat {
 
     class Window
     {
+        class Impl;
     public:
+        class WindowKey     //The thread holding this key can use the window for any purpose except message handling until the key is destroyed
+        {
+            WindowKey(Window&);
+            ~WindowKey();
+
+            sf::Window* Window();
+
+            Impl* m_window = nullptr;
+        };
+
         Window(WindowConfig const& = {});
         ~Window();
 
@@ -41,7 +57,6 @@ namespace ge2::plat {
 
     private:
         //Pointer to implementation to avoid unnecessary inclusions in header
-        class Impl;
         Impl* m_impl;
 
         //Data relating to window is all stored in Impl

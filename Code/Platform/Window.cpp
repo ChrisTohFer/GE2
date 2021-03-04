@@ -43,15 +43,17 @@ namespace ge2::plat {
 
         //Thread stuff
         std::thread         m_thread;
-        std::atomic<bool>   m_looping = false;
     public:
+        std::atomic<bool>   m_looping = false;
         std::mutex          m_messageMutex;
+        std::mutex          m_windowMutex;
 
-        //Window messaging
+        //GE2 window types
         WindowMessages      m_messages;
-
-        //Other
         WindowConfig        m_config;
+
+        //Window
+        sf::Window*         m_window;
     };
 
     //Window methods
@@ -85,7 +87,7 @@ namespace ge2::plat {
     WindowMessages Window::TakeMessages()
     {
         WindowMessages messages;
-        if (m_impl)
+        if (m_impl && m_impl->m_looping)    //Only attempt to take messages if still looping
         {
             m_impl->m_messageMutex.lock();
             messages = std::move(m_impl->m_messages);
@@ -117,6 +119,7 @@ namespace ge2::plat {
     void Window::Impl::Loop()
     {
         sf::Window window = CreateWindow();
+        m_window = &window;
 
         window.setActive(false);
         m_looping = true;
@@ -129,6 +132,12 @@ namespace ge2::plat {
             using namespace std::chrono_literals;
             std::this_thread::sleep_for(5ms);
         }
+
+        //Ensure nobody is holding the mutexes before we exit
+        m_messageMutex.lock();
+        m_messageMutex.unlock();
+        m_windowMutex.lock();
+        m_windowMutex.unlock();
 
         window.setActive(true);
         window.close();
@@ -211,6 +220,29 @@ namespace ge2::plat {
                 break;
             }
         }
+    }
+
+    Window::WindowKey::WindowKey(ge2::plat::Window& window)
+        : m_window(window.m_impl && m_window->m_looping ? window.m_impl : nullptr)  //Only get access to the window if it is still looping
+    {
+        if (m_window)
+        {
+            m_window->m_windowMutex.lock();
+            m_window->m_window->setActive(true);
+        }
+    }
+    Window::WindowKey::~WindowKey()
+    {
+        if (m_window)
+        {
+            m_window->m_window->setActive(false);
+            m_window->m_windowMutex.unlock();
+        }
+    }
+
+    sf::Window* Window::WindowKey::Window()
+    {
+        return m_window ? m_window->m_window : nullptr;
     }
 
 }
