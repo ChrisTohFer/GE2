@@ -60,4 +60,21 @@ namespace ThirdParty
         }
     }
 
+    [Generate]
+    class Imgui : Projects.DefaultProject
+    {
+        public Imgui()
+        {
+            SourceRootPath = Constants.ThirdPartyPath + @"Imgui\";
+        }
+
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            base.Configure(conf, target);
+            conf.SetLib();
+
+            conf.IncludePaths.Add(SourceRootPath);
+        }
+    }
+
 }
