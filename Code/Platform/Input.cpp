@@ -68,7 +68,7 @@ namespace ge2::plat
             else if (me.type == MouseEvent::Type::RELEASED)
             {
                 state.Up = true;
-                state.Held = true;
+                state.Held = false;
             }
 
             m_mousePosition = { float(me.x), float(me.y) };

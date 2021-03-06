@@ -14,6 +14,22 @@ namespace ge2
 {
     using namespace plat;
 
+    void HandleInputEvents(Input const& input)
+    {
+        //Mouse events
+        auto position = input.MousePosition();
+        auto delta = input.MouseDelta();
+        io->MouseDelta = { delta.x, delta.y };
+        for (int i = 0; i < 5; ++i) //Mouse left, right, middle, x1, x2
+        {
+            auto button = Input::Button(i + Input::Button::MouseLeft);
+
+            io->MouseClicked[i] = input.ButtonDown(button);
+            io->MouseClickedPos[i] = { position.x, position.y };
+            io->MouseDown[i] = input.ButtonHeld(button);
+        }
+    }
+
     void InitialiseImgui(Window::WindowKey const& key)
     {
         IMGUI_CHECKVERSION();
@@ -31,13 +47,13 @@ namespace ge2
         ImGui::DestroyContext();
         io = nullptr;
     }
-    void ImguiBeginFrame(Window::WindowKey const&, plat::WindowMessages const& messages)  //WindowKey parameter unused, but must be provided to prove we have window access
+    void ImguiBeginFrame(Window::WindowKey const&, Input const& input)  //WindowKey parameter unused, but must be provided to prove we have window access
     {
         ImGui_ImplWin32_NewFrame();
         ImGui_ImplOpenGL2_NewFrame();
         ImGui::NewFrame();
 
-        //input stuff
+        HandleInputEvents(input);
     }
     void ImguiEndFrame(Window::WindowKey const&)                                          //WindowKey parameter unused, but must be provided to prove we have window access
     {
