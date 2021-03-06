@@ -73,6 +73,10 @@ namespace ThirdParty
             base.Configure(conf, target);
             conf.SetLib();
 
+            //Dependencies
+            conf.AddPrivateDependency<Glad>(target);
+
+            //Settings
             conf.IncludePaths.Add(SourceRootPath);
         }
     }

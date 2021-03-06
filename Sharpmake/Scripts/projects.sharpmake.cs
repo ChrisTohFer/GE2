@@ -58,7 +58,11 @@ namespace Projects
             base.Configure(conf, target);
             conf.SetConsoleApp();
 
+            //Dependencies
+            ThirdParty.SFML.AddAsDependency(conf, target);
+
             conf.AddPrivateDependency<ThirdParty.Glad>(target);
+            conf.AddPrivateDependency<ThirdParty.Imgui>(target);
 
             conf.AddPrivateDependency<Platform>(target);
         }
@@ -72,8 +76,8 @@ namespace Projects
             base.Configure(conf, target);
             conf.SetLib();
 
+            //Dependencies
             conf.AddPrivateDependency<ThirdParty.Glad>(target);
-            conf.AddPrivateDependency<ThirdParty.Imgui>(target);
 
             ThirdParty.OpenGL.AddAsDependency(conf, target);
             ThirdParty.SFML.AddAsDependency(conf, target);

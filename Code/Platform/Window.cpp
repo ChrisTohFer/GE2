@@ -223,7 +223,7 @@ namespace ge2::plat {
     }
 
     Window::WindowKey::WindowKey(ge2::plat::Window& window)
-        : m_window(window.m_impl && m_window->m_looping ? window.m_impl : nullptr)  //Only get access to the window if it is still looping
+        : m_window(window.m_impl && window.m_impl->m_looping ? window.m_impl : nullptr)  //Only get access to the window if it is still looping
     {
         if (m_window)
         {

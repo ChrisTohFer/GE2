@@ -32,11 +32,12 @@ namespace ge2::plat {
     public:
         class WindowKey     //The thread holding this key can use the window for any purpose except message handling until the key is destroyed
         {
+        public:
             WindowKey(Window&);
             ~WindowKey();
 
             sf::Window* Window();
-
+        private:
             Impl* m_window = nullptr;
         };
 
