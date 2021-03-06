@@ -35,8 +35,12 @@ namespace ge2::plat {
         public:
             WindowKey(Window&);
             ~WindowKey();
+            WindowKey(WindowKey const&) = delete;
+            WindowKey(WindowKey&&);
+            WindowKey& operator=(WindowKey const&) = delete;
+            WindowKey& operator=(WindowKey&&);
 
-            sf::Window* Window();
+            sf::Window* const Window() const;
         private:
             Impl* m_window = nullptr;
         };
@@ -54,7 +58,9 @@ namespace ge2::plat {
         bool IsOpen() const;
 
         //Get window events since last call of TakeMessages()
-        WindowMessages TakeMessages();
+        WindowMessages  TakeMessages();
+        //The holder of the key has exclusive access to the window
+        WindowKey       CreateKey();
 
     private:
         //Pointer to implementation to avoid unnecessary inclusions in header

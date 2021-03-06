@@ -99,6 +99,11 @@ namespace ge2::plat {
         return messages;
     }
 
+    Window::WindowKey Window::CreateKey()
+    {
+        return WindowKey(*this);
+    }
+
     //Window::Impl methods
 
     Window::Impl::Impl(WindowConfig const& config)
@@ -240,7 +245,21 @@ namespace ge2::plat {
         }
     }
 
-    sf::Window* Window::WindowKey::Window()
+    Window::WindowKey::WindowKey(WindowKey&& rhs)
+        : m_window(rhs.m_window)
+    {
+        rhs.m_window = nullptr;
+    }
+
+    Window::WindowKey& Window::WindowKey::operator=(WindowKey&& rhs)
+    {
+        m_window = rhs.m_window;
+        rhs.m_window = nullptr;
+
+        return *this;
+    }
+
+    sf::Window* const Window::WindowKey::Window() const
     {
         return m_window ? m_window->m_window : nullptr;
     }
