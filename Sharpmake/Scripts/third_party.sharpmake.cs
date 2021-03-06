@@ -55,6 +55,7 @@ namespace ThirdParty
         {
             base.Configure(conf, target);
             conf.SetLib();
+            conf.SolutionFolder = "ThirdParty";
 
             conf.IncludePaths.Add("include");
         }
@@ -72,6 +73,7 @@ namespace ThirdParty
         {
             base.Configure(conf, target);
             conf.SetLib();
+            conf.SolutionFolder = "ThirdParty";
 
             //Dependencies
             conf.AddPrivateDependency<Glad>(target);
