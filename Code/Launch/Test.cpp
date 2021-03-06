@@ -5,6 +5,7 @@
 #include "backend/imgui_impl_win32.h"
 
 #include "SFML/Window.hpp"
+#include "SFML/OpenGL.hpp"
 
 #include <thread>
 
@@ -14,17 +15,16 @@ int main()
     using namespace ge2::plat;
 
     Window window;
+    
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-    
-
     {
         Window::WindowKey key(window);
         ImGui_ImplWin32_Init(key.Window()->getSystemHandle());
         ImGui_ImplOpenGL2_Init();
         ImGui_ImplOpenGL2_CreateFontsTexture();
     }
+    ImGuiIO& io = ImGui::GetIO();
 
     int updateLengthMicroseconds = 5000;
     WindowMessages messages;
@@ -35,23 +35,25 @@ int main()
 
         {
             Window::WindowKey key(window);
+            glClearColor(0, 0, 0, 1);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
             ImGui_ImplWin32_NewFrame();
             ImGui_ImplOpenGL2_NewFrame();
+            ImGui::NewFrame();
         }
-        ImGui::NewFrame();
-
+        
         ImGui::Begin("Window");
         ImGui::Text("Testing");
         ImGui::End();
-
-        ImGui::Render();
+        ImGui::ShowDemoWindow();
+        
         {
             Window::WindowKey key(window);
-            auto drawData = ImGui::GetDrawData();
-            if (drawData)
-            {
-                ImGui_ImplOpenGL2_RenderDrawData(drawData);
-            }
+            ImGui::Render();
+            ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+        
+            key.Window()->display();
         }
 
         using namespace std::chrono_literals;
@@ -64,8 +66,8 @@ int main()
         ImGui_ImplOpenGL2_Shutdown();
         ImGui_ImplWin32_Shutdown();
     }
-
     ImGui::DestroyContext();
+
     window.Close();
     
     return 0;
