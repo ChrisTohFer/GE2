@@ -159,7 +159,7 @@ namespace Main
             conf.AddProject<Projects.Launch>(target);
             conf.AddProject<Projects.Global>(target);
 
-            //Utility.CopyFolderToOutput(target, Constants.AssetsPath);
+            Utility.CopyFolderToOutput(target, Constants.AssetsPath);
         }
     }
 
