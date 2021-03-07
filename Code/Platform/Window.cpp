@@ -194,6 +194,21 @@ namespace ge2::plat {
 
                 //Input events (mouse, keyboard)
 
+            case sf::Event::MouseWheelScrolled:
+                if (event.mouseWheelScroll.wheel == sf::Mouse::Wheel::VerticalWheel)
+                {
+                    m_messages.mouseEvents.push_back
+                    ({
+                        MouseEvent::Type::WHEELSCROLLED,
+                        -1,
+                        event.mouseWheelScroll.x,
+                        event.mouseWheelScroll.y,
+                        event.mouseWheelScroll.delta,
+                    });
+
+                }
+                break;
+
             case sf::Event::TextEntered:
                 //TODO
                 break;

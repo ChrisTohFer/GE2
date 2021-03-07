@@ -148,12 +148,14 @@ namespace ge2::plat
 
         Vector2f MousePosition() const;
         Vector2f MouseDelta() const;
+        float MouseWheelDelta() const;
 
         void Update(WindowMessages const&);
 
     private:
         Vector2f m_mousePosition;
         Vector2f m_mouseMovement;
+        float    m_mouseWheelDelta;
 
         ButtonState m_buttons[static_cast<int>(Button::TotalKeyCount)];
     };

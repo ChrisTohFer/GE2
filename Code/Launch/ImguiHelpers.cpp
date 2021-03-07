@@ -20,6 +20,7 @@ namespace ge2
         auto position = input.MousePosition();
         auto delta = input.MouseDelta();
         io->MouseDelta = { delta.x, delta.y };
+        io->MouseWheel = input.MouseWheelDelta();
         for (int i = 0; i < 5; ++i) //Mouse left, right, middle, x1, x2
         {
             auto button = Input::Button(i + Input::Button::MouseLeft);
@@ -51,9 +52,8 @@ namespace ge2
     {
         ImGui_ImplWin32_NewFrame();
         ImGui_ImplOpenGL2_NewFrame();
-        ImGui::NewFrame();
-
         HandleInputEvents(input);
+        ImGui::NewFrame();
     }
     void ImguiEndFrame(Window::WindowKey const&)                                          //WindowKey parameter unused, but must be provided to prove we have window access
     {

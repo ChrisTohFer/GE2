@@ -12,13 +12,15 @@ namespace ge2::plat
             PRESSED,
             RELEASED,
             ENTERED,
-            EXITED
+            EXITED,
+            WHEELSCROLLED
         };
 
         Type type;
         int button;
         int x;
         int y;
+        float wheelScroll;
     };
 
     struct KeyEvent

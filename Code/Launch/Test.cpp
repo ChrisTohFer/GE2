@@ -38,7 +38,7 @@ int main()
         
 
         ImGui::Begin("Window");
-        ImGui::Text("Testing");
+        ImGui::Text("%f", input.MouseWheelDelta());
         ImGui::End();
         ImGui::ShowDemoWindow();
         

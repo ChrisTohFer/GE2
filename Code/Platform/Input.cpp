@@ -28,6 +28,11 @@ namespace ge2::plat
         return m_mouseMovement;
     }
 
+    float Input::MouseWheelDelta() const
+    {
+        return m_mouseWheelDelta;
+    }
+
     void Input::Update(WindowMessages const& messages)
     {
         for (ButtonState& bs : m_buttons)
@@ -55,6 +60,7 @@ namespace ge2::plat
         }
 
         Vector2f lastMousePosition = m_mousePosition;
+        m_mouseWheelDelta = 0;
 
         for (MouseEvent const& me : messages.mouseEvents)
         {
@@ -69,6 +75,10 @@ namespace ge2::plat
             {
                 state.Up = true;
                 state.Held = false;
+            }
+            else if (me.type == MouseEvent::Type::WHEELSCROLLED)
+            {
+                m_mouseWheelDelta += me.wheelScroll;
             }
 
             m_mousePosition = { float(me.x), float(me.y) };
