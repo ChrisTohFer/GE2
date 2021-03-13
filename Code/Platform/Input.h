@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Platform/WindowMessages.h"
-
 #include "Global/Vector.h"
+
+#include <array>
 
 namespace ge2::plat
 {
@@ -124,14 +125,6 @@ namespace ge2::plat
 
             KeyCountOld,     ///< Keep last -- the total number of keyboard keys
 
-            // Deprecated values:
-
-            Dash = Hyphen,       ///< \deprecated Use Hyphen instead
-            BackSpace = Backspace,    ///< \deprecated Use Backspace instead
-            BackSlash = Backslash,    ///< \deprecated Use Backslash instead
-            SemiColon = Semicolon,    ///< \deprecated Use Semicolon instead
-            Return = Enter,        ///< \deprecated Use Enter instead
-
             // Mouse values
             MouseLeft,       ///< The left mouse button
             MouseRight,      ///< The right mouse button
@@ -139,7 +132,7 @@ namespace ge2::plat
             MouseXButton1,   ///< The first extra mouse button
             MouseXButton2,   ///< The second extra mouse button
 
-            TotalKeyCount
+            TotalButtonCount
         };
 
         bool ButtonDown(Button) const;
@@ -150,6 +143,7 @@ namespace ge2::plat
         Vector2f MouseDelta() const;
         float MouseWheelDelta() const;
         std::vector<unsigned int> UnicodeInput() const;
+        bool WindowHasFocus() const;
 
         void Update(WindowMessages&);
 
@@ -158,8 +152,9 @@ namespace ge2::plat
         Vector2f                    m_mouseMovement;
         float                       m_mouseWheelDelta;
         std::vector<unsigned int>   m_unicodeInput;
+        bool                        m_windowHasFocus;
 
-        ButtonState                 m_buttons[static_cast<int>(Button::TotalKeyCount)];
+        std::array<ButtonState, Button::TotalButtonCount> m_buttons;
     };
 
 }

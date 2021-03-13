@@ -158,7 +158,7 @@ namespace ge2::plat
     struct WindowMessages
     {
         bool                        closeButtonPressed  = false;
-        bool                        hasFocus            = false;
+        bool                        hasFocus            = true;
         bool                        lostFocus           = false;
         bool                        gainedFocus         = false;
         int                         width               = false;

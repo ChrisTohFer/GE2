@@ -38,6 +38,11 @@ namespace ge2::plat
         return m_unicodeInput;
     }
 
+    bool Input::WindowHasFocus() const
+    {
+        return m_windowHasFocus;
+    }
+
     void Input::Update(WindowMessages& messages)
     {
         for (ButtonState& bs : m_buttons)
@@ -96,6 +101,9 @@ namespace ge2::plat
             m_mousePosition = { float(me.x), float(me.y) };
         }
         m_mouseMovement = m_mousePosition - lastMousePosition;
+
+        //Other
+        m_windowHasFocus = messages.hasFocus;
     }
 
 }
