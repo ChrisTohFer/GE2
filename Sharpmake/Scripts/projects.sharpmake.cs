@@ -78,6 +78,7 @@ namespace Projects
 
             //Dependencies
             conf.AddPrivateDependency<ThirdParty.Glad>(target);
+            conf.AddPrivateDependency<ThirdParty.Imgui>(target);
 
             ThirdParty.OpenGL.AddAsDependency(conf, target);
             ThirdParty.SFML.AddAsDependency(conf, target);
