@@ -29,22 +29,17 @@ int main()
 
         {
             auto key = window.CreateKey();
-            glClearColor(0, 0, 0, 1);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
             ge2::ImguiBeginFrame(key, input);
         }
 
-        
-
-        ImGui::Begin("Window");
-        ImGui::Text("%f", input.MouseWheelDelta());
-        ImGui::End();
         ImGui::ShowDemoWindow();
         
         {
             auto key = window.CreateKey();
-            ge2::ImguiEndFrame(key);
+            //Graphics + display
+            glClearColor(0, 0, 0, 1);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            ge2::ImguiEndFrame(key);    //Ui must be drawn last before display()
             key.Window()->display();
         }
 
