@@ -33,13 +33,24 @@ namespace ge2::plat
         return m_mouseWheelDelta;
     }
 
-    void Input::Update(WindowMessages const& messages)
+    std::vector<unsigned int> Input::UnicodeInput() const
+    {
+        return m_unicodeInput;
+    }
+
+    void Input::Update(WindowMessages& messages)
     {
         for (ButtonState& bs : m_buttons)
         {
             bs.Down = false;
             bs.Up = false;
         }
+
+        //Text
+
+        m_unicodeInput = std::move(messages.textInput);
+
+        //Keyboard
 
         for (KeyEvent const& ke : messages.keyEvents)
         {
@@ -59,9 +70,10 @@ namespace ge2::plat
             }
         }
 
+        //Mouse
+
         Vector2f lastMousePosition = m_mousePosition;
         m_mouseWheelDelta = 0;
-
         for (MouseEvent const& me : messages.mouseEvents)
         {
             auto& state = m_buttons[int(Button::MouseLeft) + me.button];
@@ -83,7 +95,6 @@ namespace ge2::plat
 
             m_mousePosition = { float(me.x), float(me.y) };
         }
-
         m_mouseMovement = m_mousePosition - lastMousePosition;
     }
 

@@ -194,6 +194,15 @@ namespace ge2::plat {
 
                 //Input events (mouse, keyboard)
 
+            case sf::Event::TextEntered:
+                m_messages.textInput.push_back(event.text.unicode);
+                break;
+            case sf::Event::KeyPressed:
+                m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::PRESSED));
+                break;
+            case sf::Event::KeyReleased:
+                m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::RELEASED));
+                break;
             case sf::Event::MouseWheelScrolled:
                 if (event.mouseWheelScroll.wheel == sf::Mouse::Wheel::VerticalWheel)
                 {
@@ -205,18 +214,7 @@ namespace ge2::plat {
                         event.mouseWheelScroll.y,
                         event.mouseWheelScroll.delta,
                     });
-
                 }
-                break;
-
-            case sf::Event::TextEntered:
-                //TODO
-                break;
-            case sf::Event::KeyPressed:
-                m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::PRESSED));
-                break;
-            case sf::Event::KeyReleased:
-                m_messages.keyEvents.push_back(convert(event.key, KeyEvent::Type::RELEASED));
                 break;
             case sf::Event::MouseButtonPressed:
                 m_messages.mouseEvents.push_back(convert(event.mouseButton, MouseEvent::Type::PRESSED));

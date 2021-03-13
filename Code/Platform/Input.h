@@ -149,15 +149,17 @@ namespace ge2::plat
         Vector2f MousePosition() const;
         Vector2f MouseDelta() const;
         float MouseWheelDelta() const;
+        std::vector<unsigned int> UnicodeInput() const;
 
-        void Update(WindowMessages const&);
+        void Update(WindowMessages&);
 
     private:
-        Vector2f m_mousePosition;
-        Vector2f m_mouseMovement;
-        float    m_mouseWheelDelta;
+        Vector2f                    m_mousePosition;
+        Vector2f                    m_mouseMovement;
+        float                       m_mouseWheelDelta;
+        std::vector<unsigned int>   m_unicodeInput;
 
-        ButtonState m_buttons[static_cast<int>(Button::TotalKeyCount)];
+        ButtonState                 m_buttons[static_cast<int>(Button::TotalKeyCount)];
     };
 
 }

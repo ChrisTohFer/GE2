@@ -157,15 +157,16 @@ namespace ge2::plat
 
     struct WindowMessages
     {
-        bool                    closeButtonPressed  = false;
-        bool                    hasFocus            = false;
-        bool                    lostFocus           = false;
-        bool                    gainedFocus         = false;
-        int                     width               = false;
-        int                     height              = false;
+        bool                        closeButtonPressed  = false;
+        bool                        hasFocus            = false;
+        bool                        lostFocus           = false;
+        bool                        gainedFocus         = false;
+        int                         width               = false;
+        int                         height              = false;
 
-        std::vector<MouseEvent> mouseEvents;
-        std::vector<KeyEvent>   keyEvents;
+        std::vector<MouseEvent>     mouseEvents;
+        std::vector<KeyEvent>       keyEvents;
+        std::vector<unsigned int>   textInput;
     };
 
 }
