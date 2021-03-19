@@ -22,8 +22,9 @@ namespace ge2::plat {
 
         const char* title  = "Window";
         Style       style = Style::NORMAL;
-        IntRect       size  = { 0,0,500,500 };
-        //Possibly something for opengl parameters here
+        IntRect     size  = { 0,0,500,500 };
+        int         openGLMajorVersion = 4;
+        int         openGLMinorVersion = 6;
     };
 
     class Window

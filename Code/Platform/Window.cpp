@@ -163,7 +163,8 @@ namespace ge2::plat {
             //config.size = screenDimensions    -   TODO
             break;
         }
-        return sf::Window(sf::VideoMode(m_config.size.width, m_config.size.height), m_config.title, windowStyle);
+        auto openGLSettings = sf::ContextSettings(0u, 0u, 0u, m_config.openGLMajorVersion, m_config.openGLMinorVersion);
+        return sf::Window(sf::VideoMode(m_config.size.width, m_config.size.height), m_config.title, windowStyle, openGLSettings);
     }
 
     void Window::Impl::PollEvents(sf::Window& window)

@@ -4,6 +4,7 @@
 #include "Platform/Input.h"
 
 #include "imgui.h"
+#include "glad/glad.h"
 #include "SFML/Window.hpp"
 #include "SFML/OpenGL.hpp"
 
@@ -17,7 +18,11 @@ int main()
     Window window;
     Input input;
 
-    ge2::InitialiseImgui(window.CreateKey());
+    {
+        auto key = window.CreateKey();
+        gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
+        ge2::InitialiseImgui(key);
+    }
 
     int updateLengthMicroseconds = 5000;
     WindowMessages messages;
