@@ -1,0 +1,18 @@
+misc:
+-make imgui consume input so it is not also delivered to game
+
+ui library:
+-purpose:
+	-Add structure to usage of imgui
+	-widgets + ui windows which persist and are updated each frame
+-benefits:
+	-Modular ui
+	-Easy to turn ui on and off
+	-Centralized access?
+
+graphics library:
+-purpose:
+	-Add definitions for textures, meshes, shader programs, etc
+	-Enable models and sprites to be drawn in a 3d environment
+	-Cameras - orthographic and perspective
+	
