@@ -34,7 +34,7 @@ namespace ge2::plat {
         class WindowKey     //The thread holding this key can use the window for any purpose except message handling until the key is destroyed
         {
         public:
-            WindowKey(Window&);
+            WindowKey(Window const&);
             ~WindowKey();
             WindowKey(WindowKey const&) = delete;
             WindowKey(WindowKey&&);
@@ -61,7 +61,7 @@ namespace ge2::plat {
         //Get window events since last call of TakeMessages()
         WindowMessages  TakeMessages();
         //The holder of the key has exclusive access to the window
-        WindowKey       CreateKey();
+        WindowKey       CreateKey() const;
 
     private:
         //Pointer to implementation to avoid unnecessary inclusions in header

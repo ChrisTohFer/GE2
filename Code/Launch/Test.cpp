@@ -2,11 +2,11 @@
 
 #include "Platform/Window.h"
 #include "Platform/Input.h"
+#include "Graphics/Temp.h"
 
 #include "imgui.h"
 #include "glad/glad.h"
 #include "SFML/Window.hpp"
-#include "SFML/OpenGL.hpp"
 
 #include <thread>
 
@@ -18,11 +18,8 @@ int main()
     Window window;
     Input input;
 
-    {
-        auto key = window.CreateKey();
-        gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
-        ge2::InitialiseImgui(key);
-    }
+    gfx::Init(window);
+    ge2::InitialiseImgui(window);
 
     int updateLengthMicroseconds = 5000;
     WindowMessages messages;
@@ -32,27 +29,19 @@ int main()
         messages = window.TakeMessages();
         input.Update(messages);
 
-        {
-            auto key = window.CreateKey();
-            ge2::ImguiBeginFrame(key, input);
-        }
-
+        ge2::ImguiBeginFrame(input);
         ImGui::ShowDemoWindow();
         
-        {
-            auto key = window.CreateKey();
-            //Graphics + display
-            glClearColor(0, 0, 0, 1);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            ge2::ImguiEndFrame(key);    //Ui must be drawn last before display()
-            key.Window()->display();
-        }
+        gfx::ClearColour();
+        ge2::ImguiEndFrame();    //Ui must be drawn last before display()
+        gfx::Display();
 
         using namespace std::chrono_literals;
         std::this_thread::sleep_until(start + updateLengthMicroseconds * 1us);
     }
 
-    ge2::ShutdownImgui(window.CreateKey());
+    ge2::ShutdownImgui();
+    gfx::Shutdown();
     window.Close();
     
     return 0;

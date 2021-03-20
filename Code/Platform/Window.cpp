@@ -99,7 +99,7 @@ namespace ge2::plat {
         return messages;
     }
 
-    Window::WindowKey Window::CreateKey()
+    Window::WindowKey Window::CreateKey() const
     {
         return WindowKey(*this);
     }
@@ -241,7 +241,7 @@ namespace ge2::plat {
         }
     }
 
-    Window::WindowKey::WindowKey(ge2::plat::Window& window)
+    Window::WindowKey::WindowKey(ge2::plat::Window const& window)
         : m_window(window.m_impl && window.m_impl->m_looping ? window.m_impl : nullptr)  //Only get access to the window if it is still looping
     {
         if (m_window)

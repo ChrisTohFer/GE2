@@ -49,6 +49,22 @@ namespace Projects
             conf.SetLib();
         }
     }
+
+    [Generate]
+    class Graphics : DefaultProject
+    {
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            base.Configure(conf, target);
+            conf.SetLib();
+
+            //Dependencies
+            ThirdParty.SFML.AddAsDependency(conf, target);
+
+            conf.AddPrivateDependency<ThirdParty.Glad>(target);
+            conf.AddPrivateDependency<Platform>(target);
+        }
+    }
     
     [Generate]
     class Launch : DefaultProject
@@ -64,6 +80,7 @@ namespace Projects
             conf.AddPrivateDependency<ThirdParty.Glad>(target);
             conf.AddPrivateDependency<ThirdParty.Imgui>(target);
 
+            conf.AddPrivateDependency<Graphics>(target);
             conf.AddPrivateDependency<Platform>(target);
         }
     }

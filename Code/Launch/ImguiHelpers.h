@@ -7,8 +7,8 @@ namespace ge2
 {
     using namespace plat;
 
-    void InitialiseImgui(Window::WindowKey const&);
-    void ShutdownImgui(Window::WindowKey const&);
-    void ImguiBeginFrame(Window::WindowKey const&, Input const&);
-    void ImguiEndFrame(Window::WindowKey const&);
+    void InitialiseImgui(Window const&);
+    void ShutdownImgui();
+    void ImguiBeginFrame(Input const&);
+    void ImguiEndFrame();
 }
