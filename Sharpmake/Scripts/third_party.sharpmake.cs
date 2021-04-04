@@ -83,4 +83,23 @@ namespace ThirdParty
         }
     }
 
+    [Generate]
+    class STBImage : Projects.DefaultProject
+    {
+        public STBImage()
+        {
+            SourceRootPath = Constants.ThirdPartyPath + @"stb_image\";
+        }
+
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            base.Configure(conf, target);
+            conf.SetLib();
+            conf.SolutionFolder = "ThirdParty";
+
+            //Settings
+            conf.IncludePaths.Add(SourceRootPath);
+        }
+    }
+
 }
