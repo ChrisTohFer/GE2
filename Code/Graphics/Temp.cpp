@@ -37,6 +37,7 @@ namespace ge2::gfx
         unsigned int EBO;
         ShaderProgram* shaderProgram = nullptr;
         Texture2D*     texture = nullptr;
+        Texture2D*     texture2 = nullptr;
     }
     void LoadTriangle()
     {
@@ -83,23 +84,28 @@ namespace ge2::gfx
         const char* fragmentSource = "#version 460 core\n"
             "out vec4 FragColor;"
             "in  vec2 TexCoord;"
-            "uniform sampler2D OurTexture;"
+            "uniform sampler2D texture1;"
+            "uniform sampler2D texture2;"
             "void main()"
             "{"
-            "FragColor = texture(OurTexture, TexCoord);"
+            "FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.5);"
             "}\0";
         shaderProgram = new ShaderProgram(vertexSource, fragmentSource);
+        shaderProgram->SetUniform("texture1", 0);
+        shaderProgram->SetUniform("texture2", 1);
     }
 
     void LoadTexture()
     {
-        texture = new Texture2D("Textures/container.jpg");
+        texture = new Texture2D("Textures\\container.jpg", false);
+        texture2 = new Texture2D("Textures\\awesomeface.png", true);
     }
 
     void DrawTriangle()
     {
         shaderProgram->MakeActive();
-        texture->MakeActive();
+        texture->MakeActive(0);
+        texture2->MakeActive(1);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
@@ -207,8 +213,9 @@ namespace ge2::gfx
         glUniform1d(uniformLocation, value);
     }
 
-    Texture2D::Texture2D(const char* filename)
+    Texture2D::Texture2D(const char* filename, bool hasAlphaChannel)
     {
+        stbi_set_flip_vertically_on_load(1);
         unsigned char* data = stbi_load(filename, &m_width, &m_height, &m_nChannels, 0);
 
         glGenTextures(1, &m_id);
@@ -221,7 +228,14 @@ namespace ge2::gfx
         {
             m_success = true;
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            if (hasAlphaChannel)
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            }
+            else
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            }
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else
@@ -239,8 +253,10 @@ namespace ge2::gfx
         glDeleteTextures(1, &m_id);
     }
 
-    void Texture2D::MakeActive()
+    void Texture2D::MakeActive(int unit)
     {
+        _ASSERT(unit >= 0 && unit < 16);    //Texture unit might be out of bounds
+        glActiveTexture(GL_TEXTURE0 + unit);
         glBindTexture(GL_TEXTURE_2D, m_id);
     }
 
