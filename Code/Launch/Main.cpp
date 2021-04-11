@@ -16,9 +16,6 @@ int main()
     using namespace ge2;
     using namespace ge2::plat;
 
-    //Visual studio debugger doesn't always use the exe directory as the working directory
-    SetWorkingDirectoryToExeDirectory();
-
     Window window;
     Input input;
 

@@ -7,7 +7,7 @@ namespace ge2::plat
     void SetWorkingDirectoryToExeDirectory()
     {
         char buffer[256];
-        GetModuleFileName(nullptr, buffer, 256);
+        GetModuleFileNameA(nullptr, buffer, 256);
         
         //Remove the file name and keep just the path
         {
@@ -21,6 +21,6 @@ namespace ge2::plat
             buffer[lastSlash] = '\0';
         }
         
-        SetCurrentDirectory(buffer);
+        SetCurrentDirectoryA(buffer);
     }
 }

@@ -44,7 +44,7 @@ namespace Main
         }
 
         //File copying
-        private static void CopyFolderRecursive(DirectoryInfo source, DirectoryInfo target)
+        public static void CopyFolderRecursive(DirectoryInfo source, DirectoryInfo target)
         {
             if (!target.Exists)
                 target.Create();
@@ -56,10 +56,6 @@ namespace Main
             {
                 file.CopyTo(target.FullName + @"\" + file.Name, true);
             }
-        }
-        public static void CopyFolderToOutput(CustomTarget target, string folder)
-        {
-            CopyFolderRecursive(new DirectoryInfo(folder), new DirectoryInfo(Constants.OutputPath + target.Name));
         }
     }
 
@@ -158,8 +154,6 @@ namespace Main
 
             conf.AddProject<Projects.Launch>(target);
             conf.AddProject<Projects.Global>(target);
-
-            Utility.CopyFolderToOutput(target, Constants.AssetsPath);
         }
     }
 
@@ -191,6 +185,9 @@ namespace Main
             //We don't need to keep the reference to CustomArguments object since we save the flags in static variables
             CommandLine.ExecuteOnObject(new CustomArguments());
             args.Generate<GE2>();
+
+            //Make sure assets are accessible - visual studio debugger uses project folder as local directory
+            Utility.CopyFolderRecursive(new DirectoryInfo(Constants.AssetsPath), new DirectoryInfo(Constants.ProjectPath));
 
             //Logging
             Utility.PrintLog();
