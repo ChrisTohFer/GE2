@@ -75,6 +75,7 @@ namespace ThirdParty
             conf.SetLib();
             conf.SolutionFolder = "ThirdParty";
 
+            conf.Options.Add(Options.Vc.General.WarningLevel.Level0);
             conf.IncludePaths.Add(SourceRootPath);
         }
     }

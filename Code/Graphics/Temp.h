@@ -15,6 +15,7 @@ namespace ge2::gfx
         bool CompiledWithoutError();
         const char* ErrorLog();
 
+        unsigned int Id() const;
         void MakeActive();
 
         void SetUniform(const char* name, float value);

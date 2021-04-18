@@ -3,6 +3,10 @@
 #include "glad/glad.h"
 #include "SFML/Window.hpp"
 #include "stb_image.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+
 
 #include <iostream>
 
@@ -76,10 +80,11 @@ namespace ge2::gfx
             "layout (location = 0) in vec3 aPos;\n"
             "layout (location = 1) in vec2 aTexCoord;"
             "out vec2 TexCoord;"
+            "uniform mat4 transform;"
             "void main()"
             "{"
             "TexCoord = aTexCoord;"
-            "gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);"
+            "gl_Position = transform * vec4(aPos, 1.0);"
             "}\0";
         const char* fragmentSource = "#version 460 core\n"
             "out vec4 FragColor;"
@@ -104,6 +109,14 @@ namespace ge2::gfx
     void DrawTriangle()
     {
         shaderProgram->MakeActive();
+
+        glm::mat4 transform(1.0f);
+        static float rotation(0.f);
+        rotation += 3.f / 60.f;
+        transform = glm::rotate(transform, rotation, glm::vec3(0, 1, 1));
+        unsigned int transformLoc = glGetUniformLocation(shaderProgram->Id(), "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
         texture->MakeActive(0);
         texture2->MakeActive(1);
         glBindVertexArray(VAO);
@@ -171,6 +184,11 @@ namespace ge2::gfx
     const char* ShaderProgram::ErrorLog()
     {
         return m_log ? m_log : "";
+    }
+
+    unsigned int ShaderProgram::Id() const
+    {
+        return m_id;
     }
 
     void ShaderProgram::MakeActive()
