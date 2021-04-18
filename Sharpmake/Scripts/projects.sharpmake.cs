@@ -62,6 +62,7 @@ namespace Projects
             ThirdParty.SFML.AddAsDependency(conf, target);
 
             conf.AddPrivateDependency<ThirdParty.Glad>(target);
+            conf.AddPrivateDependency<ThirdParty.GLM>(target);
             conf.AddPrivateDependency<ThirdParty.STBImage>(target);
             conf.AddPrivateDependency<Platform>(target);
         }

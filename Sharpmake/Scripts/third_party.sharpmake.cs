@@ -62,6 +62,24 @@ namespace ThirdParty
     }
 
     [Generate]
+    class GLM : Projects.DefaultProject
+    {
+        public GLM()
+        {
+            SourceRootPath = Constants.ThirdPartyPath + @"glm\";
+        }
+
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            base.Configure(conf, target);
+            conf.SetLib();
+            conf.SolutionFolder = "ThirdParty";
+
+            conf.IncludePaths.Add(SourceRootPath);
+        }
+    }
+
+    [Generate]
     class Imgui : Projects.DefaultProject
     {
         public Imgui()
