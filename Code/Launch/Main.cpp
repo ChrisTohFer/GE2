@@ -50,7 +50,11 @@ int main()
         {
             auto key = window.CreateKey();
             gfx::ClearColour();
+
+            gfx::DrawTriangle(Vector3f{1.f,1.f,0.f}, Vector3f{ 0.f,0.f,1.f });
+            gfx::DrawTriangle(Vector3f{-1.f,-1.f,0.f}, Vector3f{ 0.f,0.f,0.f });
             gfx::DrawTriangle();
+
             ge2::ImguiEndFrame();    //Ui must be drawn last before display()
             gfx::Display(key);
         }
