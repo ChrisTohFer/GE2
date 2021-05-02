@@ -9,6 +9,13 @@ namespace ge2::gfx
 {
     using namespace plat;
 
+    struct Camera
+    {
+        Vector3f position = Vector3f::Zero();
+        Vector3f rotation = Vector3f::Zero();
+        Vector3f positionDelta = Vector3f::Zero();
+    };
+
     void Init();
 
     void ClearColour();
@@ -19,5 +26,6 @@ namespace ge2::gfx
     void LoadShaderProgram();
     void LoadTexture();
     void DrawTriangle(Vector3f position = { 0,0,0 }, Vector3f rotation = { 0,0,0 });
+    void UpdateCamera(Camera&);
 
 }

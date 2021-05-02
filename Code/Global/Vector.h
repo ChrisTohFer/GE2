@@ -11,8 +11,8 @@ namespace ge2
 		static Vector2 UnitX();
 		static Vector2 UnitY();
 
-        float x;
-        float y;
+        float x = 0;
+        float y = 0;
 		
 		Vector2 operator-() const;
 		
@@ -39,9 +39,9 @@ namespace ge2
 		static Vector3 UnitY();
 		static Vector3 UnitZ();
 
-        float x;
-        float y;
-		float z;
+        float x = 0;
+        float y = 0;
+		float z = 0;
 		
 		Vector3 operator-() const;
 		

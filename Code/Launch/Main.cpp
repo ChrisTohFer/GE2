@@ -28,6 +28,11 @@ int main()
         gfx::LoadTexture();
     }
 
+
+    gfx::Camera camera;
+    camera.position = Vector3f{ 0.f, 0.f, 2.f };
+
+
     int updateLengthMicroseconds = 1000000 / 60;
     WindowMessages messages;
     while (!messages.closeButtonPressed)
@@ -45,6 +50,16 @@ int main()
 
         //Misc
         ImGui::ShowDemoWindow();
+
+        if (input.ButtonHeld(Input::Button::W)) camera.positionDelta.z -= 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::S)) camera.positionDelta.z += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::A)) camera.positionDelta.x -= 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::D)) camera.positionDelta.x += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::Up)) camera.rotation.x -= 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::Down)) camera.rotation.x += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::Left)) camera.rotation.y -= 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::Right)) camera.rotation.y += 5.f / 60.f;
+        gfx::UpdateCamera(camera);
         
         //Draw and display
         {

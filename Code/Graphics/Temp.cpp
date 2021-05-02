@@ -17,6 +17,7 @@ namespace ge2::gfx
     void Init()
     {
         gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
+        glEnable(GL_DEPTH_TEST);
     }
 
     void ClearColour()
@@ -30,17 +31,22 @@ namespace ge2::gfx
         key.Window()->display();
     }
 
-    void Update(int sizeX, int sizeY)
-    {
-        glViewport(0, 0, sizeX, sizeY);
-    }
-
     namespace {
         ShaderProgram* shaderProgram = nullptr;
         Texture2D*     texture = nullptr;
         Texture2D*     texture2 = nullptr;
-        VertexArray* vertexArray = nullptr;
+        VertexArray*   vertexArray = nullptr;
+        glm::mat4      cameraTransform;
+        int            screenWidth, screenHeight;
     }
+
+    void Update(int sizeX, int sizeY)
+    {
+        glViewport(0, 0, sizeX, sizeY);
+        screenWidth = sizeX;
+        screenHeight = sizeY;
+    }
+
     void LoadTriangle()
     {
         std::vector<float> vertices = {
@@ -104,13 +110,33 @@ namespace ge2::gfx
         transform = glm::rotate(transform, rotation.z, glm::vec3(0, 0, 1));
         transform = glm::rotate(transform, rotation.y, glm::vec3(0, 1, 0));
         transform = glm::rotate(transform, rotation.x, glm::vec3(1, 0, 0));
-
+        transform = cameraTransform * transform;
         unsigned int transformLoc = glGetUniformLocation(shaderProgram->Id(), "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
         texture->MakeActive(0);
         texture2->MakeActive(1);
         vertexArray->Draw();
+    }
+
+    void UpdateCamera(Camera& camera)
+    {
+        //Rotate the delta before applying
+        glm::mat4 deltaRotation(1.f);
+        deltaRotation = glm::rotate(deltaRotation, -camera.rotation.z, glm::vec3(0, 0, 1));
+        deltaRotation = glm::rotate(deltaRotation, -camera.rotation.y, glm::vec3(0, 1, 0));
+        deltaRotation = glm::rotate(deltaRotation, -camera.rotation.x, glm::vec3(1, 0, 0));
+        glm::vec4 delta(camera.positionDelta.x, camera.positionDelta.y, camera.positionDelta.z, 1.f);
+        delta = deltaRotation * delta;
+        camera.position += Vector3f{ delta.x, delta.y, delta.z };
+        camera.positionDelta = Vector3f::Zero();
+
+        cameraTransform = glm::mat4(1.0f);
+        cameraTransform = glm::rotate(cameraTransform, camera.rotation.x, glm::vec3(1, 0, 0));
+        cameraTransform = glm::rotate(cameraTransform, camera.rotation.y, glm::vec3(0, 1, 0));
+        cameraTransform = glm::rotate(cameraTransform, camera.rotation.z, glm::vec3(0, 0, 1));
+
+        cameraTransform = glm::perspective(glm::radians(45.f), float(screenWidth)/float(screenHeight), 0.1f, 100.f) * glm::translate(cameraTransform, -glm::vec3(camera.position.x, camera.position.y, camera.position.z));
     }
 
 }
