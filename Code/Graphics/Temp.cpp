@@ -3,6 +3,7 @@
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "VertexArray.h"
+#include "Shapes.h"
 
 #include "glad/glad.h"
 #include "SFML/Window.hpp"
@@ -14,10 +15,21 @@ namespace ge2::gfx
 {
     using namespace plat;
 
+    namespace {
+        ShaderProgram* shaderProgram = nullptr;
+        Texture2D* texture = nullptr;
+        Texture2D* texture2 = nullptr;
+        VertexArray* vertexArray = nullptr;
+        glm::mat4      cameraTransform;
+        int            screenWidth, screenHeight;
+        Shapes* shapesSingleton;
+    }
+
     void Init()
     {
         gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
         glEnable(GL_DEPTH_TEST);
+        shapesSingleton = new Shapes();
     }
 
     void ClearColour()
@@ -29,15 +41,6 @@ namespace ge2::gfx
     void Display(Window::WindowKey const& key)
     {
         key.Window()->display();
-    }
-
-    namespace {
-        ShaderProgram* shaderProgram = nullptr;
-        Texture2D*     texture = nullptr;
-        Texture2D*     texture2 = nullptr;
-        VertexArray*   vertexArray = nullptr;
-        glm::mat4      cameraTransform;
-        int            screenWidth, screenHeight;
     }
 
     void Update(int sizeX, int sizeY)
@@ -116,7 +119,7 @@ namespace ge2::gfx
 
         texture->MakeActive(0);
         texture2->MakeActive(1);
-        vertexArray->Draw();
+        Shapes::Cube().Draw();
     }
 
     void UpdateCamera(Camera& camera)
