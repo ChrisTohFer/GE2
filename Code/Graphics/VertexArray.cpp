@@ -48,7 +48,7 @@ namespace ge2::gfx
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(unsigned int), elements.data(), GL_STATIC_DRAW);
     }
 
-    void VertexArray::Draw()
+    void VertexArray::Draw() const
     {
         glBindVertexArray(m_vertexArrayId);
         if (m_elementBufferId == INVALID_ID)

@@ -20,7 +20,7 @@ namespace ge2::gfx
     public:
         VertexArray(std::vector<float> const& vertices, std::vector<AttribPointer> const& attribPointers, std::vector<unsigned int> const& elements = {});
 
-        void Draw();
+        void Draw() const;
 
     private:
         unsigned int SetAttribPointers(std::vector<AttribPointer> const& attribPointers);

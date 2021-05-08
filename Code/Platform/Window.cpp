@@ -163,7 +163,7 @@ namespace ge2::plat {
             //config.size = screenDimensions    -   TODO
             break;
         }
-        auto openGLSettings = sf::ContextSettings(0u, 0u, 0u, m_config.openGLMajorVersion, m_config.openGLMinorVersion);
+        auto openGLSettings = sf::ContextSettings(16u, 0u, 0u, m_config.openGLMajorVersion, m_config.openGLMinorVersion);
         return sf::Window(sf::VideoMode(m_config.size.width, m_config.size.height), m_config.title, windowStyle, openGLSettings);
     }
 
