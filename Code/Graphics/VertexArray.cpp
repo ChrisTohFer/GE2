@@ -34,15 +34,15 @@ namespace ge2::gfx
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
         const auto stride = SetAttribPointers(attribPointers);
-
+        
         if (elements.empty())
         {
-            m_count = vertices.size() * sizeof(float) / stride;
+            m_count = unsigned int(vertices.size() * sizeof(float)) / stride;
             m_elementBufferId = INVALID_ID;
             return;
         }
 
-        m_count = elements.size();
+        m_count = unsigned int(elements.size());
         glGenBuffers(1, &m_elementBufferId);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementBufferId);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(unsigned int), elements.data(), GL_STATIC_DRAW);
@@ -71,7 +71,7 @@ namespace ge2::gfx
         }
 
         //Now set the attribute pointers
-        unsigned int offset = 0;
+        unsigned long long offset = 0;
         for (auto const& p : attribPointers)
         {
             glVertexAttribPointer(p.location, p.count, GL_FLOAT, p.normalized, stride, (void*)offset);
