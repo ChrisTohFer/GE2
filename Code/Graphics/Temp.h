@@ -24,7 +24,6 @@ namespace ge2::gfx
 
     void LoadTriangle();
     void LoadShaderProgram();
-    void LoadTexture();
     void DrawTriangle(Vector3f position = { 0,0,0 }, Vector3f rotation = { 0,0,0 });
     void UpdateCamera(Camera&);
 

@@ -43,9 +43,35 @@ namespace ge2::gfx
         stbi_image_free(data);
     }
 
+    Texture2D::Texture2D(Texture2D&& other)
+        : m_id(other.m_id)
+        , m_width(other.m_width)
+        , m_height(other.m_height)
+        , m_nChannels(other.m_nChannels)
+        , m_success(other.m_success)
+    {
+        other.m_id = 0;
+    }
+
+    Texture2D& Texture2D::operator=(Texture2D&& other)
+    {
+        m_id = other.m_id;
+        m_width = other.m_width;
+        m_height = other.m_height;
+        m_nChannels = other.m_nChannels;
+        m_success = other.m_success;
+
+        other.m_id = 0;
+
+        return *this;
+    }
+
     Texture2D::~Texture2D()
     {
-        glDeleteTextures(1, &m_id);
+        if (m_id != 0)
+        {
+            glDeleteTextures(1, &m_id);
+        }
     }
 
     void Texture2D::MakeActive(int unit)
@@ -53,6 +79,11 @@ namespace ge2::gfx
         _ASSERT(unit >= 0 && unit < 16);    //Texture unit might be out of bounds
         glActiveTexture(GL_TEXTURE0 + unit);
         glBindTexture(GL_TEXTURE_2D, m_id);
+    }
+
+    bool Texture2D::LoadedSuccessfully() const
+    {
+        return m_success;
     }
 
 }

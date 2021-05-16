@@ -4,6 +4,8 @@
 #include "Texture.h"
 #include "VertexArray.h"
 #include "Shapes.h"
+#include "Loaders.h"
+#include "AssetManager/Assets.h"
 
 #include "glad/glad.h"
 #include "SFML/Window.hpp"
@@ -17,12 +19,12 @@ namespace ge2::gfx
 
     namespace {
         ShaderProgram* shaderProgram = nullptr;
-        Texture2D* texture = nullptr;
-        Texture2D* texture2 = nullptr;
         VertexArray* vertexArray = nullptr;
         glm::mat4      cameraTransform;
         int            screenWidth, screenHeight;
         Shapes* shapesSingleton;
+        JPGLoader jpgLoader;
+        PNGLoader pngLoader;
     }
 
     void Init()
@@ -30,6 +32,8 @@ namespace ge2::gfx
         gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
         glEnable(GL_DEPTH_TEST);
         shapesSingleton = new Shapes();
+        ast::AddLoader(jpgLoader);
+        ast::AddLoader(pngLoader);
     }
 
     void ClearColour()
@@ -98,12 +102,6 @@ namespace ge2::gfx
         shaderProgram->SetUniform("texture2", 1);
     }
 
-    void LoadTexture()
-    {
-        texture = new Texture2D("Assets\\Textures\\container.jpg", false);
-        texture2 = new Texture2D("Assets\\Textures\\awesomeface.png", true);
-    }
-
     void DrawTriangle(Vector3f position, Vector3f rotation)
     {
         shaderProgram->MakeActive();
@@ -117,8 +115,8 @@ namespace ge2::gfx
         unsigned int transformLoc = glGetUniformLocation(shaderProgram->Id(), "transform");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-        texture->MakeActive(0);
-        texture2->MakeActive(1);
+        jpgLoader.textures[0].MakeActive(0);
+        pngLoader.textures[0].MakeActive(1);
         Shapes::Cube().Draw();
     }
 
@@ -139,7 +137,7 @@ namespace ge2::gfx
         cameraTransform = glm::rotate(cameraTransform, camera.rotation.y, glm::vec3(0, 1, 0));
         cameraTransform = glm::rotate(cameraTransform, camera.rotation.z, glm::vec3(0, 0, 1));
 
-        cameraTransform = glm::perspective(glm::radians(45.f), float(screenWidth)/float(screenHeight), 0.1f, 100.f) * glm::translate(cameraTransform, -glm::vec3(camera.position.x, camera.position.y, camera.position.z));
+        cameraTransform = glm::perspective(glm::radians(45.f), float(screenWidth) / float(screenHeight), 0.1f, 100.f) * glm::translate(cameraTransform, -glm::vec3(camera.position.x, camera.position.y, camera.position.z));
     }
 
 }

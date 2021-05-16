@@ -2,44 +2,42 @@
 
 #include <filesystem>
 #include <iostream>
+#include <cwctype>
 
 namespace
 {
     std::unordered_map<std::wstring, ge2::ast::Loader*> loaders;
 
-    bool LoadFile(std::wstring const& path)
+    void LoadFile(std::wstring const& path)
     {
         auto extensionLocation = path.find_last_of(L".");
         if (extensionLocation != std::string::npos)
         {
             auto extension = path.substr(extensionLocation + 1);
+            std::transform(extension.begin(), extension.end(), extension.begin(), std::towlower);
+
             auto loader = loaders.find(extension);
             if (loader != loaders.end())
             {
-                loader->second->LoadFile(path);
-                return true;
+                if (!loader->second->LoadFile(path))
+                {
+                    std::wcout << L"Failed to load file:\t" << path << L"\n";
+                }
+                return;
             }
         }
-        return false;
+        std::wcout << L"No loader for file:\t" << path << L"\n";
     }
 
     void IterateDirectory(const wchar_t* directory)
     {
         using namespace std::filesystem;
 
-        for (auto& entry : directory_iterator(directory))
+        for (auto& entry : recursive_directory_iterator(directory))
         {
-            if (entry.is_directory())
+            if (!entry.is_directory())
             {
-                IterateDirectory(entry.path().c_str());
-            }
-            else
-            {
-                auto path = entry.path().wstring();
-                if (!LoadFile(path))
-                {
-                    std::wcout << L"No loader for file:\t" << path << L"\n";
-                }
+                LoadFile(entry.path().wstring());
             }
         }
     }
