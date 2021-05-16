@@ -187,7 +187,7 @@ namespace Main
             args.Generate<GE2>();
 
             //Make sure assets are accessible - visual studio debugger uses project folder as local directory
-            Utility.CopyFolderRecursive(new DirectoryInfo(Constants.AssetsPath), new DirectoryInfo(Constants.ProjectPath));
+            Utility.CopyFolderRecursive(new DirectoryInfo(Constants.AssetsPath), new DirectoryInfo(Constants.ProjectPath + @"Assets\"));
 
             //Logging
             Utility.PrintLog();

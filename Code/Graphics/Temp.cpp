@@ -100,8 +100,8 @@ namespace ge2::gfx
 
     void LoadTexture()
     {
-        texture = new Texture2D("Textures\\container.jpg", false);
-        texture2 = new Texture2D("Textures\\awesomeface.png", true);
+        texture = new Texture2D("Assets\\Textures\\container.jpg", false);
+        texture2 = new Texture2D("Assets\\Textures\\awesomeface.png", true);
     }
 
     void DrawTriangle(Vector3f position, Vector3f rotation)
