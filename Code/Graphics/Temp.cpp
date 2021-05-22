@@ -1,10 +1,12 @@
 #include "Temp.h"
 
+#include "Loaders.h"
+#include "Renderer.h"
 #include "ShaderProgram.h"
+#include "Shapes.h"
 #include "Texture.h"
 #include "VertexArray.h"
-#include "Shapes.h"
-#include "Loaders.h"
+
 #include "AssetManager/Assets.h"
 
 #include "glad/glad.h"

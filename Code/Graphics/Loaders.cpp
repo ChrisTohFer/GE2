@@ -6,7 +6,7 @@ namespace ge2::gfx
     {
         std::string fileNarrow(file.begin(), file.end());
         textures.push_back(Texture2D(fileNarrow.c_str(), true));
-        return textures.back().LoadedSuccessfully();
+        return textures.back().Valid();
     }
     std::wstring PNGLoader::Extension() const
     {
@@ -17,7 +17,7 @@ namespace ge2::gfx
     {
         std::string fileNarrow(file.begin(), file.end());
         textures.push_back(Texture2D(fileNarrow.c_str(), false));
-        return textures.back().LoadedSuccessfully();
+        return textures.back().Valid();
     }
     std::wstring JPGLoader::Extension() const
     {
