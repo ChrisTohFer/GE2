@@ -10,4 +10,7 @@ namespace ge2::ast
         virtual bool LoadFile(std::wstring const& file) = 0;
         virtual std::wstring Extension() const = 0;
     };
+
+    std::string LoadTextFile(std::wstring const& file);
+
 }

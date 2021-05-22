@@ -1,5 +1,7 @@
 #include "Loaders.h"
 
+#include <fstream>
+
 namespace ge2::gfx
 {
     bool PNGLoader::LoadFile(std::wstring const& file)
@@ -23,4 +25,21 @@ namespace ge2::gfx
     {
         return L"jpg";
     }
+
+    bool ShaderLoader::LoadFile(std::wstring const& vertexFileName)
+    {
+        //assume that every .vert shader has a matching .frag shader
+        std::wstring fragFileName = vertexFileName.substr(0, vertexFileName.find_last_of(L"vert")) + L"frag";
+
+        std::string vertexSource = ast::LoadTextFile(vertexFileName);
+        std::string fragSource = ast::LoadTextFile(fragFileName);
+        shaders.push_back(ShaderProgram(vertexSource.data(), fragSource.data()));
+
+        return shaders.back().CompiledWithoutError();
+    }
+    std::wstring ShaderLoader::Extension() const
+    {
+        return L"vert";
+    }
+
 }

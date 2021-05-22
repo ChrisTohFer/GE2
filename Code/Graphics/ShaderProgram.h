@@ -7,10 +7,13 @@ namespace ge2::gfx
     {
     public:
         ShaderProgram(const char* vertexSource, const char* fragmentSource);
+        ShaderProgram(ShaderProgram const&) = delete;
+        ShaderProgram(ShaderProgram&&) noexcept;
         ~ShaderProgram();
+        ShaderProgram& operator=(ShaderProgram const&) = delete;
+        ShaderProgram& operator=(ShaderProgram&&) noexcept;
 
         bool CompiledWithoutError();
-        const char* ErrorLog();
 
         unsigned int Id() const;
         void MakeActive();
@@ -24,7 +27,6 @@ namespace ge2::gfx
     private:
         unsigned int m_id;
         int          m_success;
-        char* m_log = nullptr;
     };
 
 }

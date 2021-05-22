@@ -17,7 +17,7 @@ namespace ge2::gfx
         glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &m_success);
         if (!m_success)
         {
-            m_log = new char[512];
+            char m_log[512];
             glGetShaderInfoLog(vertexShader, 512, NULL, m_log);
             std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << m_log << std::endl;
             return;
@@ -31,7 +31,7 @@ namespace ge2::gfx
         glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &m_success);
         if (!m_success)
         {
-            m_log = new char[512];
+            char m_log[512];
             glGetShaderInfoLog(fragmentShader, 512, NULL, m_log);
             std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << m_log << std::endl;
             return;
@@ -45,7 +45,7 @@ namespace ge2::gfx
 
         glGetProgramiv(m_id, GL_LINK_STATUS, &m_success);
         if (!m_success) {
-            m_log = new char[512];
+            char m_log[512];
             glGetProgramInfoLog(m_id, 512, NULL, m_log);
             std::cout << "ERROR::SHADER::PROGRAM_FAILED\n" << m_log << std::endl;
         }
@@ -54,20 +54,41 @@ namespace ge2::gfx
         glDeleteShader(fragmentShader);
     }
 
+    ShaderProgram::ShaderProgram(ShaderProgram&& other) noexcept
+        : m_id(other.m_id)
+        , m_success(other.m_success)
+    {
+        other.m_id = 0;
+        other.m_success = false;
+    }
+
     ShaderProgram::~ShaderProgram()
     {
-        glDeleteProgram(m_id);
-        delete m_log;
+        if (m_id != 0)
+        {
+            glDeleteProgram(m_id);
+        }
+    }
+
+    ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other) noexcept
+    {
+        if (m_id != 0)
+        {
+            glDeleteProgram(m_id);
+        }
+
+        m_id      = other.m_id;
+        m_success = other.m_success;
+
+        other.m_id = 0;
+        other.m_success = false;
+
+        return *this;
     }
 
     bool ShaderProgram::CompiledWithoutError()
     {
         return m_success;
-    }
-
-    const char* ShaderProgram::ErrorLog()
-    {
-        return m_log ? m_log : "";
     }
 
     unsigned int ShaderProgram::Id() const

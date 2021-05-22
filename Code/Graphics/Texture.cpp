@@ -59,6 +59,7 @@ namespace ge2::gfx
         , m_valid(other.m_valid)
     {
         other.m_id = 0;
+        other.m_valid = false;
     }
 
     Texture2D& Texture2D::operator=(Texture2D&& other) noexcept

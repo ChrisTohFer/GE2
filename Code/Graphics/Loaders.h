@@ -24,5 +24,12 @@ namespace ge2::gfx
 
         std::vector<Texture2D> textures;
     };
+    struct ShaderLoader : public ast::Loader
+    {
+        bool LoadFile(std::wstring const& file) override;
+        std::wstring Extension() const override;
+
+        std::vector<ShaderProgram> shaders;
+    };
 
 }
