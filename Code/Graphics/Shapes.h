@@ -6,14 +6,14 @@ namespace ge2::gfx
     class Shapes
     {
     public:
-        static VertexArray const& Cube();
-        static VertexArray const& Sprite();
+        void Initialise();
 
-        Shapes();
+        VertexArray const& Cube() const;
+        VertexArray const& Sprite() const;
+
     private:
-        inline static Shapes* m_singleton = nullptr;
-        const VertexArray m_cube;
-        const VertexArray m_sprite;
+        VertexArray m_cube;
+        VertexArray m_sprite;
     };
     
 }

@@ -18,9 +18,17 @@ namespace ge2::gfx
     class VertexArray
     {
     public:
+        VertexArray();
         VertexArray(std::vector<float> const& vertices, std::vector<AttribPointer> const& attribPointers, std::vector<unsigned int> const& elements = {});
+        VertexArray(VertexArray const&) = delete;
+        VertexArray(VertexArray&&) noexcept;
+        ~VertexArray();
+        VertexArray& operator=(VertexArray const&) = delete;
+        VertexArray& operator=(VertexArray&&) noexcept;
 
+        void Initialise(std::vector<float> const& vertices, std::vector<AttribPointer> const& attribPointers, std::vector<unsigned int> const& elements = {});
         void Draw() const;
+        bool Valid() const;
 
     private:
         unsigned int SetAttribPointers(std::vector<AttribPointer> const& attribPointers);

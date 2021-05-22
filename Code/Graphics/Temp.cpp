@@ -24,7 +24,7 @@ namespace ge2::gfx
         VertexArray* vertexArray = nullptr;
         glm::mat4      cameraTransform;
         int            screenWidth, screenHeight;
-        Shapes* shapesSingleton;
+        Shapes shapesSingleton;
         JPGLoader jpgLoader;
         PNGLoader pngLoader;
     }
@@ -33,7 +33,7 @@ namespace ge2::gfx
     {
         gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
         glEnable(GL_DEPTH_TEST);
-        shapesSingleton = new Shapes();
+        shapesSingleton.Initialise();
         ast::AddLoader(jpgLoader);
         ast::AddLoader(pngLoader);
     }
@@ -119,7 +119,7 @@ namespace ge2::gfx
 
         jpgLoader.textures[0].MakeActive(0);
         pngLoader.textures[0].MakeActive(1);
-        Shapes::Cube().Draw();
+        shapesSingleton.Cube().Draw();
     }
 
     void UpdateCamera(Camera& camera)

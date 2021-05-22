@@ -74,21 +74,19 @@ namespace
 
 namespace ge2::gfx
 {
-    VertexArray const& Shapes::Cube()
+    VertexArray const& Shapes::Cube() const
     {
-        return m_singleton->m_cube;
+        return m_cube;
     }
 
-    VertexArray const& Shapes::Sprite()
+    VertexArray const& Shapes::Sprite() const
     {
-        return m_singleton->m_sprite;
+        return m_sprite;
     }
 
-    Shapes::Shapes()
-        : m_cube(cubeVertices, cubeAttributes)
-        , m_sprite(spriteVertices, spriteAttributes)
+    void Shapes::Initialise()
     {
-        _ASSERT(!m_singleton);
-        m_singleton = this;
+        m_cube.Initialise(cubeVertices, cubeAttributes);
+        m_sprite.Initialise(spriteVertices, spriteAttributes);
     }
 }
