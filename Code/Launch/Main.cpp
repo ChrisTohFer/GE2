@@ -29,10 +29,8 @@ int main()
         ast::LoadAllAssets();
     }
 
-
     gfx::Camera camera;
     camera.position = Vector3f{ 0.f, 0.f, 2.f };
-
 
     int updateLengthMicroseconds = 1000000 / 60;
     WindowMessages messages;

@@ -82,24 +82,23 @@ namespace ge2::gfx
             "layout (location = 0) in vec3 aPos;\n"
             "layout (location = 1) in vec2 aTexCoord;"
             "out vec2 TexCoord;"
-            "uniform mat4 transform;"
+            "uniform mat4 model;"
+            "uniform mat4 camera;"
             "void main()"
             "{"
             "TexCoord = aTexCoord;"
-            "gl_Position = transform * vec4(aPos, 1.0);"
+            "gl_Position = camera * model * vec4(aPos, 1.0);"
             "}\0";
         const char* fragmentSource = "#version 460 core\n"
             "out vec4 FragColor;"
             "in  vec2 TexCoord;"
-            "uniform sampler2D texture1;"
-            "uniform sampler2D texture2;"
+            "uniform sampler2D tex;"
             "void main()"
             "{"
-            "FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.5);"
+            "FragColor = texture(tex, TexCoord);"
             "}\0";
         shaderProgram = new ShaderProgram(vertexSource, fragmentSource);
-        shaderProgram->SetUniform("texture1", 0);
-        shaderProgram->SetUniform("texture2", 1);
+        shaderProgram->SetUniform("tex", 0);
     }
 
     void DrawTriangle(Vector3f position, Vector3f rotation)
@@ -111,9 +110,10 @@ namespace ge2::gfx
         transform = glm::rotate(transform, rotation.z, glm::vec3(0, 0, 1));
         transform = glm::rotate(transform, rotation.y, glm::vec3(0, 1, 0));
         transform = glm::rotate(transform, rotation.x, glm::vec3(1, 0, 0));
-        transform = cameraTransform * transform;
-        unsigned int transformLoc = glGetUniformLocation(shaderProgram->Id(), "transform");
+        unsigned int transformLoc = glGetUniformLocation(shaderProgram->Id(), "model");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+        transformLoc = glGetUniformLocation(shaderProgram->Id(), "camera");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(cameraTransform));
 
         jpgLoader.textures[0].MakeActive(0);
         pngLoader.textures[0].MakeActive(1);
