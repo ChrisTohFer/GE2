@@ -63,6 +63,24 @@ namespace ge2
 	using Vector2f = Vector2<float>;
 	using Vector3f = Vector3<float>;
 
+	//Functions
+
+	template <typename TYPE>
+	Vector3<TYPE> CrossProduct(Vector3<TYPE> const& lhs, Vector3<TYPE> const& rhs)
+	{
+		return Vector3<TYPE>
+		{
+			lhs.y * rhs.z - lhs.z * rhs.y,
+			lhs.z * rhs.x - lhs.x * rhs.z,
+			lhs.x * rhs.y - lhs.y * rhs.x
+		};
+	}
+	template <typename TYPE>
+	TYPE DotProduct(Vector3<TYPE> const& lhs, Vector3<TYPE> const& rhs)
+	{
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
+	}
+
 	//Vector2 definitions
 
 	template<typename TYPE>
