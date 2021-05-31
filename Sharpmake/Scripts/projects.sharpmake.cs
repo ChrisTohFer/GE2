@@ -73,6 +73,7 @@ namespace Projects
 
             conf.AddPrivateDependency<ThirdParty.Glad>(target);
             conf.AddPrivateDependency<ThirdParty.GLM>(target);
+            conf.AddPrivateDependency<ThirdParty.Imgui>(target);
             conf.AddPrivateDependency<ThirdParty.STBImage>(target);
             conf.AddPrivateDependency<AssetManager>(target);
             conf.AddPrivateDependency<Platform>(target);
