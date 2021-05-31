@@ -7,13 +7,14 @@ namespace ge2
 	template <typename TYPE>
     struct Vector2
     {
-		static Vector2 Zero();
-		static Vector2 UnitX();
-		static Vector2 UnitY();
+		static constexpr Vector2 Zero();
+		static constexpr Vector2 UnitX();
+		static constexpr Vector2 UnitY();
 
         float x = 0;
         float y = 0;
 		
+		bool operator==(const Vector2&) const;
 		Vector2 operator-() const;
 		
 		Vector2 operator+(const Vector2&) const;
@@ -34,15 +35,16 @@ namespace ge2
 	template <typename TYPE>
     struct Vector3
     {
-		static Vector3 Zero();
-		static Vector3 UnitX();
-		static Vector3 UnitY();
-		static Vector3 UnitZ();
+		static constexpr Vector3 Zero();
+		static constexpr Vector3 UnitX();
+		static constexpr Vector3 UnitY();
+		static constexpr Vector3 UnitZ();
 
         float x = 0;
         float y = 0;
 		float z = 0;
-		
+
+		bool operator==(const Vector3&) const;
 		Vector3 operator-() const;
 		
 		Vector3 operator+(const Vector3& rhs) const;
@@ -78,25 +80,31 @@ namespace ge2
 	template <typename TYPE>
 	TYPE DotProduct(Vector3<TYPE> const& lhs, Vector3<TYPE> const& rhs)
 	{
-		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
+		return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 	}
 
 	//Vector2 definitions
 
 	template<typename TYPE>
-	Vector2<TYPE> Vector2<TYPE>::Zero()
+	constexpr Vector2<TYPE> Vector2<TYPE>::Zero()
 	{
 		return { 0,0 };
 	}
 	template<typename TYPE>
-	Vector2<TYPE> Vector2<TYPE>::UnitX()
+	constexpr Vector2<TYPE> Vector2<TYPE>::UnitX()
 	{
 		return { 1,0 };
 	}
 	template<typename TYPE>
-	Vector2<TYPE> Vector2<TYPE>::UnitY()
+	constexpr Vector2<TYPE> Vector2<TYPE>::UnitY()
 	{
 		return { 0,1 };
+	}
+
+	template<typename TYPE>
+	inline bool Vector2<TYPE>::operator==(const Vector2& rhs) const
+	{
+		return x == rhs.x && y == rhs.y;
 	}
 
 	template<typename TYPE>
@@ -175,24 +183,30 @@ namespace ge2
 	//Vector3 definitions
 
 	template<typename TYPE>
-	Vector3<TYPE> Vector3<TYPE>::Zero()
+	constexpr Vector3<TYPE> Vector3<TYPE>::Zero()
 	{
 		return { 0,0,0 };
 	}
 	template<typename TYPE>
-	Vector3<TYPE> Vector3<TYPE>::UnitX()
+	constexpr Vector3<TYPE> Vector3<TYPE>::UnitX()
 	{
 		return { 1,0,0 };
 	}
 	template<typename TYPE>
-	Vector3<TYPE> Vector3<TYPE>::UnitY()
+	constexpr Vector3<TYPE> Vector3<TYPE>::UnitY()
 	{
 		return { 0,1,0 };
 	}
 	template<typename TYPE>
-	Vector3<TYPE> Vector3<TYPE>::UnitZ()
+	constexpr Vector3<TYPE> Vector3<TYPE>::UnitZ()
 	{
 		return { 0,0,1 };
+	}
+
+	template<typename TYPE>
+	inline bool Vector3<TYPE>::operator==(const Vector3& rhs) const
+	{
+		return x == rhs.x && y == rhs.y && z == rhs.z;
 	}
 
 	template<typename TYPE>
