@@ -1,17 +1,14 @@
 #pragma once
 
-#include "Global/Vector.h"
-#include "Global/Quaternion.h"
+#include "Global/Transform.h"
 
 namespace ge2
 {
-
     struct Camera
     {
-        Vector3f position;
-        Quaternion rotation;
+        Transform* transform;
 
         void LookAt(Vector3f location);
+        Matrix4x4f Matrix() const;
     };
-
 }

@@ -101,7 +101,6 @@ namespace ge2
 
         //Set up unit vectors
         constexpr Vector3f worldUp = Vector3f::UnitY();
-        constexpr Vector3f worldForward = Vector3f::UnitZ();
 
         Vector3f forward = direction.Normalise();
         Vector3f right = -CrossProduct(forward, worldUp).Normalise();
@@ -113,7 +112,7 @@ namespace ge2
         float trace = right.x + up.y + forward.z;
         if (trace > 0.0f)
         {
-            float s = 0.5 / sqrtf(trace + 1.f);
+            float s = 0.5f / sqrtf(trace + 1.f);
             w = 0.25f / s;
             v.x = (up.z - forward.y) * s;
             v.y = (forward.x - right.z) * s;
@@ -129,7 +128,7 @@ namespace ge2
         }
         else if (up.y > forward.z)
         {
-            float s = 2.0 * sqrt(1.0f + up.y - right.x - forward.z);
+            float s = 2.0f * sqrt(1.0f + up.y - right.x - forward.z);
             w = (forward.x - right.z) / s;
             v.x = (up.x + right.y) / s;
             v.y = 0.25f * s;
@@ -143,6 +142,8 @@ namespace ge2
             v.y = (forward.y + up.z) / s;
             v.z = 0.25f * s;
         }
+
+        *this = Normalised();
     }
 
     inline Matrix4x4f Quaternion::RotationMatrix() const

@@ -13,6 +13,7 @@ namespace ge2
         Quaternion rotation = Quaternion::Identity();
 
         Matrix4x4f Matrix() const;
+        void LookAt(Vector3f const&);
     };
 
     inline Matrix4x4f Transform::Matrix() const
@@ -34,5 +35,10 @@ namespace ge2
         result.Get(2, 3) = position.z;
 
         return result;
+    }
+
+    inline void Transform::LookAt(Vector3f const& destination)
+    {
+        rotation.LookDirection(destination - position);
     }
 }

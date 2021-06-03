@@ -9,6 +9,8 @@ namespace ge2
     {
         VALUE_TYPE values[ROWS][COLUMNS] = { 0 };
 
+        static constexpr Matrix Identity();
+
         Matrix& operator+=(Matrix const&);
         Matrix& operator+(Matrix const&) const;
 
@@ -34,6 +36,20 @@ namespace ge2
                     value += lhs.Get(row, shared) * rhs.Get(shared, column);
                 }
             }
+        }
+
+        return result;
+    }
+
+    template<typename VALUE_TYPE, int ROWS, int COLUMNS>
+    inline constexpr Matrix<VALUE_TYPE, ROWS, COLUMNS> Matrix<VALUE_TYPE, ROWS, COLUMNS>::Identity()
+    {
+        Matrix result;
+
+        static_assert(ROWS == COLUMNS);
+        for (auto i = 0; i < ROWS; ++i)
+        {
+            result.values[i][i] = 1.f;
         }
 
         return result;

@@ -30,8 +30,10 @@ int main()
     }
 
     Camera camera;
-    camera.position = Vector3f{ 0.f, 0.f, -0.1f };
-    camera.rotation = Quaternion::Identity();
+    Transform camTrans;
+    camera.transform = &camTrans;
+    camTrans.position = Vector3f{ 0.f, 0.f, -0.1f };
+    camTrans.rotation = Quaternion::Identity();
 
     Transform box;
     Vector3f euler = Vector3f::Zero();
@@ -55,38 +57,38 @@ int main()
 
         Vector3f deltaMove = Vector3f::Zero();
         Vector3f deltaEuler = Vector3f::Zero();
-        if (input.ButtonHeld(Input::Button::W)) deltaMove.z -= 5.f / 60.f;
-        if (input.ButtonHeld(Input::Button::S)) deltaMove.z += 5.f / 60.f;
-        if (input.ButtonHeld(Input::Button::A)) deltaMove.x -= 5.f / 60.f;
-        if (input.ButtonHeld(Input::Button::D)) deltaMove.x += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::W)) deltaMove.z += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::S)) deltaMove.z -= 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::A)) deltaMove.x += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::D)) deltaMove.x -= 5.f / 60.f;
         if (input.ButtonHeld(Input::Button::Space)) deltaMove.y += 5.f / 60.f;
         if (input.ButtonHeld(Input::Button::LControl)) deltaMove.y -= 5.f / 60.f;
         if (input.ButtonHeld(Input::Button::Up)) deltaEuler.x -= 5.f / 60.f;
         if (input.ButtonHeld(Input::Button::Down)) deltaEuler.x += 5.f / 60.f;
-        if (input.ButtonHeld(Input::Button::Left)) deltaEuler.y -= 5.f / 60.f;
-        if (input.ButtonHeld(Input::Button::Right)) deltaEuler.y += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::Left)) deltaEuler.y += 5.f / 60.f;
+        if (input.ButtonHeld(Input::Button::Right)) deltaEuler.y -= 5.f / 60.f;
         if (input.ButtonHeld(Input::Button::Q)) deltaEuler.z -= 5.f / 60.f;
         if (input.ButtonHeld(Input::Button::E)) deltaEuler.z += 5.f / 60.f;
 
-        camera.position += camera.rotation.Inverse() * deltaMove;
-        //camera.rotation.Euler(camera.rotation.Euler() + deltaEuler);
+        camTrans.position += camTrans.rotation * deltaMove;
+        //camTrans.rotation.Euler(camTrans.rotation.Euler() + deltaEuler);
         camera.LookAt(Vector3f::Zero());
 
         ImGui::Begin("Camera euler");
-        ImGui::Text("%f", camera.rotation.Euler().x);
-        ImGui::Text("%f", camera.rotation.Euler().y);
-        ImGui::Text("%f", camera.rotation.Euler().z);
+        ImGui::Text("%f", camTrans.rotation.Euler().x);
+        ImGui::Text("%f", camTrans.rotation.Euler().y);
+        ImGui::Text("%f", camTrans.rotation.Euler().z);
         ImGui::End();
         ImGui::Begin("Camera position");
-        ImGui::Text("%f", camera.position.x);
-        ImGui::Text("%f", camera.position.y);
-        ImGui::Text("%f", camera.position.z);
+        ImGui::Text("%f", camTrans.position.x);
+        ImGui::Text("%f", camTrans.position.y);
+        ImGui::Text("%f", camTrans.position.z);
         ImGui::End();
         ImGui::Begin("Camera quaternion");
-        ImGui::Text("%f", camera.rotation.w);
-        ImGui::Text("%f", camera.rotation.v.x);
-        ImGui::Text("%f", camera.rotation.v.y);
-        ImGui::Text("%f", camera.rotation.v.z);
+        ImGui::Text("%f", camTrans.rotation.w);
+        ImGui::Text("%f", camTrans.rotation.v.x);
+        ImGui::Text("%f", camTrans.rotation.v.y);
+        ImGui::Text("%f", camTrans.rotation.v.z);
         ImGui::End();
 
         ImGui::Begin("BoxControl");
@@ -95,6 +97,7 @@ int main()
         ImGui::SliderFloat3("Rotation", (float*)&euler, -PI, PI);
         ImGui::End();
         box.rotation.Euler(euler);
+        //box.rotation.LookDirection(-box.position);
 
         gfx::UpdateCamera(camera);
         

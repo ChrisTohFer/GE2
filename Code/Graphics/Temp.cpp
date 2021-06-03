@@ -151,16 +151,7 @@ namespace ge2::gfx
 
     void UpdateCamera(Camera const& camera)
     {
-        auto rotmat = camera.rotation.RotationMatrix();
-        cameraTransform =
-        {
-            {rotmat.values[0][0], rotmat.values[1][0], rotmat.values[2][0], 0.0f},
-            {rotmat.values[0][1], rotmat.values[1][1], rotmat.values[2][1], 0.0f},
-            {rotmat.values[0][2], rotmat.values[1][2], rotmat.values[2][2], 0.0f},
-            {0.0f,                0.0f,                0.0f,                1.0f}
-        };
-
-        cameraTransform = glm::translate(cameraTransform, -glm::vec3(camera.position.x, camera.position.y, camera.position.z));
+        cameraTransform = Convert(camera.Matrix());
         cameraTransform = glm::perspective(glm::radians(45.f), float(screenWidth) / float(screenHeight), 0.1f, 100.f) * cameraTransform;
     }
 
