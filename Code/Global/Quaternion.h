@@ -17,7 +17,7 @@ namespace ge2
         void Euler(Vector3f const&);
         Vector3f Euler() const;
 
-        Matrix4x4 RotationMatrix() const;
+        Matrix4x4f RotationMatrix() const;
 
         Quaternion Inverse() const;
         Quaternion Normalised() const;
@@ -90,9 +90,9 @@ namespace ge2
         return euler;
     }
 
-    inline Matrix4x4 Quaternion::RotationMatrix() const
+    inline Matrix4x4f Quaternion::RotationMatrix() const
     {
-        return Matrix4x4
+        return Matrix4x4f
         {
             2 * (w * w + v.x * v.x) - 1, 2 * (v.x * v.y - w * v.z), 2 * (v.x * v.z + w * v.y), 0.0f,
             2 * (v.x * v.y + w * v.z), 2 * (w * w + v.y * v.y) - 1, 2 * (v.y * v.z - w * v.x), 0.0f,
