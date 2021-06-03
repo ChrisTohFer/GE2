@@ -1,0 +1,47 @@
+#include "Core.h"
+
+#include "AssetManager/Assets.h"
+
+#include "glad/glad.h"
+#include "SFML/Window.hpp"
+
+namespace
+{
+    ge2::gfx::Core* g_core = nullptr;
+}
+
+namespace ge2::gfx
+{
+    Core::Core()
+    {
+        _ASSERT(g_core == nullptr);
+        g_core = this;
+
+        gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
+        glEnable(GL_DEPTH_TEST);
+        m_shapes.Initialise();
+        ast::AddLoader(m_jpgLoader);
+        ast::AddLoader(m_pngLoader);
+        ast::AddLoader(m_shaderLoader);
+    }
+
+    Core::~Core()
+    {
+        g_core = nullptr;
+
+        ast::RemoveLoader(m_jpgLoader);
+        ast::RemoveLoader(m_pngLoader);
+        ast::RemoveLoader(m_shaderLoader);
+    }
+
+    void Core::ClearColour() const
+    {
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void Core::Display(plat::Window::WindowKey const& key) const
+    {
+        key.Window()->display();
+    }
+}

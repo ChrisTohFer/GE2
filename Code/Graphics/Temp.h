@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Camera.h"
+
 #include "Platform/Window.h"
 #include "Global/Vector.h"
 
@@ -8,13 +10,6 @@
 namespace ge2::gfx
 {
     using namespace plat;
-
-    struct Camera
-    {
-        Vector3f position = Vector3f::Zero();
-        Vector3f rotation = Vector3f::Zero();
-        Vector3f positionDelta = Vector3f::Zero();
-    };
 
     void Init();
 
@@ -25,6 +20,6 @@ namespace ge2::gfx
     void LoadTriangle();
     void LoadShaderProgram();
     void DrawTriangle(Vector3f position = { 0,0,0 }, Vector3f rotation = { 0,0,0 });
-    void UpdateCamera(Camera&);
+    void UpdateCamera(Camera const&);
 
 }

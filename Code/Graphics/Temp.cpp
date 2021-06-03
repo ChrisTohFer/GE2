@@ -122,24 +122,19 @@ namespace ge2::gfx
         shapesSingleton.Cube().Draw();
     }
 
-    void UpdateCamera(Camera& camera)
+    void UpdateCamera(Camera const& camera)
     {
-        //Rotate the delta before applying
-        glm::mat4 deltaRotation(1.f);
-        deltaRotation = glm::rotate(deltaRotation, -camera.rotation.z, glm::vec3(0, 0, 1));
-        deltaRotation = glm::rotate(deltaRotation, -camera.rotation.y, glm::vec3(0, 1, 0));
-        deltaRotation = glm::rotate(deltaRotation, -camera.rotation.x, glm::vec3(1, 0, 0));
-        glm::vec4 delta(camera.positionDelta.x, camera.positionDelta.y, camera.positionDelta.z, 1.f);
-        delta = deltaRotation * delta;
-        camera.position += Vector3f{ delta.x, delta.y, delta.z };
-        camera.positionDelta = Vector3f::Zero();
+        auto rotmat = camera.rotation.RotationMatrix();
+        cameraTransform =
+        {
+            {rotmat.values[0][0], rotmat.values[1][0], rotmat.values[2][0], 0.0f},
+            {rotmat.values[0][1], rotmat.values[1][1], rotmat.values[2][1], 0.0f},
+            {rotmat.values[0][2], rotmat.values[1][2], rotmat.values[2][2], 0.0f},
+            {0.0f,                0.0f,                0.0f,                1.0f}
+        };
 
-        cameraTransform = glm::mat4(1.0f);
-        cameraTransform = glm::rotate(cameraTransform, camera.rotation.x, glm::vec3(1, 0, 0));
-        cameraTransform = glm::rotate(cameraTransform, camera.rotation.y, glm::vec3(0, 1, 0));
-        cameraTransform = glm::rotate(cameraTransform, camera.rotation.z, glm::vec3(0, 0, 1));
-
-        cameraTransform = glm::perspective(glm::radians(45.f), float(screenWidth) / float(screenHeight), 0.1f, 100.f) * glm::translate(cameraTransform, -glm::vec3(camera.position.x, camera.position.y, camera.position.z));
+        cameraTransform = glm::translate(cameraTransform, -glm::vec3(camera.position.x, camera.position.y, camera.position.z));
+        cameraTransform = glm::perspective(glm::radians(45.f), float(screenWidth) / float(screenHeight), 0.1f, 100.f) * cameraTransform;
     }
 
 }
