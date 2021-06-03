@@ -8,6 +8,7 @@ namespace ge2
     struct Vector2
     {
 		static constexpr Vector2 Zero();
+		static constexpr Vector2 One();
 		static constexpr Vector2 UnitX();
 		static constexpr Vector2 UnitY();
 
@@ -36,6 +37,7 @@ namespace ge2
     struct Vector3
     {
 		static constexpr Vector3 Zero();
+		static constexpr Vector3 One();
 		static constexpr Vector3 UnitX();
 		static constexpr Vector3 UnitY();
 		static constexpr Vector3 UnitZ();
@@ -89,6 +91,11 @@ namespace ge2
 	constexpr Vector2<TYPE> Vector2<TYPE>::Zero()
 	{
 		return { 0,0 };
+	}
+	template<typename TYPE>
+	constexpr Vector2<TYPE> Vector2<TYPE>::One()
+	{
+		return { 1,1 };
 	}
 	template<typename TYPE>
 	constexpr Vector2<TYPE> Vector2<TYPE>::UnitX()
@@ -186,6 +193,11 @@ namespace ge2
 	constexpr Vector3<TYPE> Vector3<TYPE>::Zero()
 	{
 		return { 0,0,0 };
+	}
+	template<typename TYPE>
+	constexpr Vector3<TYPE> Vector3<TYPE>::One()
+	{
+		return { 1,1,1 };
 	}
 	template<typename TYPE>
 	constexpr Vector3<TYPE> Vector3<TYPE>::UnitX()

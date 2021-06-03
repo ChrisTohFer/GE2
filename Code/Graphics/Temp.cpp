@@ -122,6 +122,33 @@ namespace ge2::gfx
         shapesSingleton.Cube().Draw();
     }
 
+
+    static glm::mat4 Convert(Matrix4x4f m)
+    {
+        return {
+            {m.values[0][0], m.values[1][0], m.values[2][0], m.values[3][0]},
+            {m.values[0][1], m.values[1][1], m.values[2][1], m.values[3][1]},
+            {m.values[0][2], m.values[1][2], m.values[2][2], m.values[3][2]},
+            {m.values[0][3], m.values[1][3], m.values[2][3], m.values[3][3]}
+        };
+    }
+
+
+    void DrawTriangle(Transform const& t)
+    {
+        shaderProgram->MakeActive();
+
+        glm::mat4 transform = Convert(t.Matrix());
+        unsigned int transformLoc = glGetUniformLocation(shaderProgram->Id(), "model");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+        transformLoc = glGetUniformLocation(shaderProgram->Id(), "camera");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(cameraTransform));
+
+        jpgLoader.textures[0].MakeActive(0);
+        pngLoader.textures[0].MakeActive(1);
+        shapesSingleton.Cube().Draw();
+    }
+
     void UpdateCamera(Camera const& camera)
     {
         auto rotmat = camera.rotation.RotationMatrix();

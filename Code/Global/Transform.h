@@ -8,14 +8,14 @@ namespace ge2
 {
     struct Transform
     {
-        Vector3f position;
-        Vector3f scale;
-        Quaternion rotation;
+        Vector3f position = Vector3f::Zero();
+        Vector3f scale = Vector3f::One();
+        Quaternion rotation = Quaternion::Identity();
 
         Matrix4x4f Matrix() const;
     };
 
-    Matrix4x4f Transform::Matrix() const
+    inline Matrix4x4f Transform::Matrix() const
     {
         //Rotation
         Matrix4x4f result = rotation.RotationMatrix();

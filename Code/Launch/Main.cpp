@@ -33,6 +33,9 @@ int main()
     camera.position = Vector3f{ 0.f, 0.f, -0.1f };
     camera.rotation = Quaternion::Identity();
 
+    Transform box;
+    Vector3f euler = Vector3f::Zero();
+
     int updateLengthMicroseconds = 1000000 / 60;
     WindowMessages messages;
     while (!messages.closeButtonPressed)
@@ -86,6 +89,13 @@ int main()
         ImGui::Text("%f", camera.rotation.v.z);
         ImGui::End();
 
+        ImGui::Begin("BoxControl");
+        ImGui::SliderFloat3("Position", (float*)&box.position, -2.f, 2.f);
+        ImGui::SliderFloat3("Scale", (float*)&box.scale, -1.f, 1.f);
+        ImGui::SliderFloat3("Rotation", (float*)&euler, -PI, PI);
+        ImGui::End();
+        box.rotation.Euler(euler);
+
         gfx::UpdateCamera(camera);
         
         //Draw and display
@@ -99,6 +109,7 @@ int main()
             gfx::DrawTriangle(Vector3f{-2.f,0.f, 0.f}, Vector3f{ 0.f,0.f,0.f });
             gfx::DrawTriangle(Vector3f{0.f, 2.f, 0.f}, Vector3f{ 0.f,0.f,0.f });
             gfx::DrawTriangle(Vector3f{0.f,-2.f, 0.f}, Vector3f{ 0.f,0.f,0.f });
+            gfx::DrawTriangle(box);
 
             ge2::ImguiEndFrame();    //Ui must be drawn last before display()
             gfx::Display(key);
