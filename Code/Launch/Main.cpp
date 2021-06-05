@@ -97,6 +97,10 @@ int main()
         ImGui::SliderFloat3("Rotation", (float*)&euler, -PI, PI);
         ImGui::End();
         box.rotation.Euler(euler);
+
+        static float phase = 0.f;
+        phase += 0.015f;
+        box.rotation.NLerpTowards(Quaternion::Identity(), sinf(phase));
         //box.rotation.LookDirection(-box.position);
 
         gfx::UpdateCamera(camera);

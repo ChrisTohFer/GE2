@@ -4,6 +4,8 @@
 #include "Vector.h"
 #include "Matrix.h"
 
+#include <limits>
+
 namespace ge2
 {
     struct Quaternion
@@ -13,11 +15,13 @@ namespace ge2
 
         static constexpr Quaternion Identity();
         static Quaternion FromEuler(Vector3f const&);
+        static Quaternion NLerp(Quaternion const&, Quaternion, float t);
 
         void Euler(Vector3f const&);
         Vector3f Euler() const;
 
         void LookDirection(Vector3f const&);
+        void NLerpTowards(Quaternion const&, float t);
 
         Matrix4x4f RotationMatrix() const;
 
@@ -25,7 +29,6 @@ namespace ge2
         Quaternion Normalised() const;
 
         Quaternion operator*(Quaternion const&) const;
-        Quaternion& operator*=(Quaternion const&);
     };
 
     //Function definitions
@@ -63,6 +66,47 @@ namespace ge2
         q.v.y = cx * sy * cz - sx * cy * sz;
         q.v.z = -sx * sy * cz + cx * cy * sz;
         return q;
+    }
+
+    inline Quaternion Quaternion::NLerp(Quaternion const& from, Quaternion to, float t)
+    {
+        //Taken from https://www.allegro.cc/forums/thread/599059 - modified to assume shortest path
+        Quaternion result;
+        float cos_angle;
+        float scale_from;
+        float scale_to;
+        
+        cos_angle = from.v.x * to.v.x + from.v.y * to.v.y + from.v.z * to.v.z + from.w * to.w;
+        
+        if (cos_angle < 0.0)
+        {
+            cos_angle = -cos_angle;
+            to.w = -to.w;
+            to.v.x = -to.v.x;
+            to.v.y = -to.v.y;
+            to.v.z = -to.v.z;
+        }
+        
+        if ((1.0 - fabsf(cos_angle)) > std::numeric_limits<float>::min()) {
+            ////* spherical linear interpolation (SLERP) */
+            /// angle = acos(cos_angle);
+            /// sin_angle  = sin(angle);
+            scale_from = 1.0 - t;  ///sin((1.0 - t) * angle) / sin_angle;
+            scale_to = t;  ///sin(t         * angle) / sin_angle;
+        }
+        else {
+            /* to prevent divide-by-zero, resort to linear interpolation */
+            scale_from = 1.0 - t;
+            scale_to = t;
+        }
+        
+        result.w = (float)((scale_from * from.w) + (scale_to * to.w));
+        result.v.x = (float)((scale_from * from.v.x) + (scale_to * to.v.x));
+        result.v.y = (float)((scale_from * from.v.y) + (scale_to * to.v.y));
+        result.v.z = (float)((scale_from * from.v.z) + (scale_to * to.v.z));
+        
+        // normalize; so that it remains on unit circle
+        return result.Normalised();
     }
 
     //Euler angle are applied in the order yaw(y), pitch(x), roll(z)
@@ -146,6 +190,11 @@ namespace ge2
         *this = Normalised();
     }
 
+    inline void Quaternion::NLerpTowards(Quaternion const& to, float t)
+    {
+        *this = Quaternion::NLerp(*this, to, t);
+    }
+
     inline Matrix4x4f Quaternion::RotationMatrix() const
     {
         return Matrix4x4f
@@ -195,12 +244,6 @@ namespace ge2
                 w * rhs.v.z + v.x * rhs.v.y - v.y * rhs.v.x + v.z * rhs.w
             }
         };
-    }
-
-    inline Quaternion& Quaternion::operator*=(Quaternion const& rhs)
-    {
-        *this = *this * rhs;
-        return *this;
     }
 
 }
