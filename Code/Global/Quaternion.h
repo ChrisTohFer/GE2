@@ -58,10 +58,10 @@ namespace ge2
         float sz = sinf(euler.z * 0.5f);
 
         Quaternion q;
-        q.w = cx * cy * cz - sx * sy * sz;
-        q.v.x = sx * cy * cz - cx * sy * sz;
-        q.v.y = cx * sy * cz + sx * cy * sz;
-        q.v.z = sx * sy * cz + cx * cy * sz;
+        q.w = cx * cy * cz + sx * sy * sz;
+        q.v.x = sx * cy * cz + cx * sy * sz;
+        q.v.y = cx * sy * cz - sx * cy * sz;
+        q.v.z = -sx * sy * cz + cx * cy * sz;
         return q;
     }
 
@@ -77,17 +77,17 @@ namespace ge2
         Vector3f euler;
 
         // pitch (x-axis rotation)
-        float sinx = 2.f * (v.y * v.z + w * v.x);
+        float sinx = 2.f * (w * v.x - v.y * v.z);
         if (fabsf(sinx) >= 1.f)
             euler.x = std::copysign(PI / 2.f, sinx); // use 90 degrees if out of range
         else
             euler.x = asinf(sinx);
 
         // pitch (y-axis rotation)
-        euler.y = atan2f(-2.f * (v.x * v.z - w * v.y), 2.f * (w * w + v.z * v.z) - 1.f);
+        euler.y = atan2f((v.x * v.z + w * v.y), (w * w + v.z * v.z) - 0.5f);
 
         // yaw (z-axis rotation)
-        euler.z = atan2f(-2.f * (v.x * v.y - w * v.z), 2.f * (w*w + v.y * v.y) - 1.f);
+        euler.z = atan2f((v.x * v.y + w * v.z), (w * w + v.y * v.y) - 0.5f);
 
         return euler;
     }

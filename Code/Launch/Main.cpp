@@ -71,8 +71,8 @@ int main()
         if (input.ButtonHeld(Input::Button::E)) deltaEuler.z += 5.f / 60.f;
 
         camTrans.position += camTrans.rotation * deltaMove;
-        //camTrans.rotation.Euler(camTrans.rotation.Euler() + deltaEuler);
-        camera.LookAt(Vector3f::Zero());
+        camTrans.rotation.Euler(camTrans.rotation.Euler() + deltaEuler);
+        //camera.LookAt(Vector3f::Zero());
 
         ImGui::Begin("Camera euler");
         ImGui::Text("%f", camTrans.rotation.Euler().x);
