@@ -8,35 +8,31 @@
 
 namespace
 {
-    using LoaderMap = std::unordered_map<std::wstring_view, ge2::assets::Loader*>;
+    using LoaderMap = std::unordered_map<std::wstring_view, ge2::assets::LoaderBase*>;
     LoaderMap& Loaders()
     {
         static LoaderMap map;
         return map;
     }
 
-    void LoadFile(std::wstring const& path)
+    void LoadFile(std::filesystem::path const& path)
     {
-        auto extensionLocation = path.find_last_of(L".");
-        if (extensionLocation != std::string::npos)
+        if (path.has_extension())
         {
-            auto extension = path.substr(extensionLocation + 1);
+            auto extension = path.extension().wstring();
             std::transform(extension.begin(), extension.end(), extension.begin(), std::towlower);
 
             auto loader = Loaders().find(extension);
             if (loader != Loaders().end())
             {
-                if (!loader->second->LoadFile(path))
-                {
-                    std::wcout << L"Failed to load file:\t" << path << L"\n";
-                }
+                loader->second->LoadFile(path, path.filename());
                 return;
             }
         }
         std::wcout << L"No loader for file:\t" << path << L"\n";
     }
 
-    void IterateDirectory(std::wstring_view directory)
+    void IterateDirectory(std::wstring_view const& directory)
     {
         using namespace std::filesystem;
 
@@ -52,14 +48,9 @@ namespace
 
 namespace ge2::assets
 {
-    void AddLoader(Loader& loader)
+    void AddLoader(LoaderBase& loader, std::wstring_view const& extension)
     {
-        Loaders().emplace(loader.Extension(), &loader);
-    }
-
-    void RemoveLoader(Loader const& loader)
-    {
-        Loaders().erase(loader.Extension());
+        Loaders().emplace(extension, &loader);
     }
 
     void LoadAllAssets()

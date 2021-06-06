@@ -14,7 +14,7 @@ namespace ge2::gfx
         Texture2D& operator=(Texture2D&&) noexcept;
         ~Texture2D();
 
-        void MakeActive(int unit = 0);
+        void MakeActive(int unit = 0) const;
         bool Valid() const;
 
     private:

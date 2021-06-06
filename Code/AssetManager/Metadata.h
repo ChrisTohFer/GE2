@@ -9,6 +9,6 @@ namespace ge2::assets
     void LoadMetadata();
     void UpdateMetadata();
 
-    GUID GUIDFromFilename(std::wstring_view);
+    GUID GUIDFromFilename(std::wstring_view const&);
     std::wstring FilenameFromGUID(GUID);
 }

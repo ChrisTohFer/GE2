@@ -6,71 +6,41 @@
 namespace ge2::gfx
 {
     PNGLoader::PNGLoader()
+        : Loader(L".png")
     {
-        assets::AddLoader(*this);
     }
 
-    PNGLoader::~PNGLoader()
-    {
-        assets::RemoveLoader(*this);
-    }
-
-    bool PNGLoader::LoadFile(std::wstring const& file)
+    Texture2D PNGLoader::Load(std::wstring const& file) const
     {
         std::string fileNarrow(file.begin(), file.end());
-        textures.push_back(Texture2D(fileNarrow.c_str(), true));
-        return textures.back().Valid();
-    }
-    std::wstring_view PNGLoader::Extension() const
-    {
-        return std::wstring_view(L"png");
+        return Texture2D(fileNarrow.c_str(), true);
     }
 
     JPGLoader::JPGLoader()
+        : Loader(L".jpg")
     {
-        assets::AddLoader(*this);
     }
 
-    JPGLoader::~JPGLoader()
-    {
-        assets::RemoveLoader(*this);
-    }
-
-    bool JPGLoader::LoadFile(std::wstring const& file)
+    Texture2D JPGLoader::Load(std::wstring const& file) const
     {
         std::string fileNarrow(file.begin(), file.end());
-        textures.push_back(Texture2D(fileNarrow.c_str(), false));
-        return textures.back().Valid();
-    }
-    std::wstring_view JPGLoader::Extension() const
-    {
-        return std::wstring_view(L"jpg");
+        return Texture2D(fileNarrow.c_str(), false);
     }
 
     ShaderLoader::ShaderLoader()
+        : Loader(L".vert")
     {
-        assets::AddLoader(*this);
     }
 
-    ShaderLoader::~ShaderLoader()
-    {
-        assets::RemoveLoader(*this);
-    }
-
-    bool ShaderLoader::LoadFile(std::wstring const& vertexFileName)
+    ShaderProgram ShaderLoader::Load(std::wstring const& vertexFileName) const
     {
         //assume that every .vert shader has a matching .frag shader
         std::wstring fragFileName = vertexFileName.substr(0, vertexFileName.find_last_of(L"vert")) + L"frag";
 
         std::string vertexSource = assets::LoadTextFile(vertexFileName);
         std::string fragSource = assets::LoadTextFile(fragFileName);
-        shaders.push_back(ShaderProgram(vertexSource.data(), fragSource.data()));
 
-        return shaders.back().CompiledWithoutError();
-    }
-    std::wstring_view ShaderLoader::Extension() const
-    {
-        return std::wstring_view(L"vert");
+        return ShaderProgram(vertexSource.data(), fragSource.data());
     }
 
 }

@@ -91,7 +91,7 @@ namespace ge2::assets
         }
     }
 
-    GUID GUIDFromFilename(std::wstring_view filename)
+    GUID GUIDFromFilename(std::wstring_view const& filename)
     {
         for (auto& entry : g_metadata)
         {

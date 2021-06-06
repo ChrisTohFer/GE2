@@ -88,7 +88,7 @@ namespace ge2::gfx
         }
     }
 
-    void Texture2D::MakeActive(int unit)
+    void Texture2D::MakeActive(int unit) const
     {
         _ASSERT(unit >= 0 && unit < 16);    //Texture unit might be out of bounds
         glActiveTexture(GL_TEXTURE0 + unit);

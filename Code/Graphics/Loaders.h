@@ -9,35 +9,23 @@
 
 namespace ge2::gfx
 {
-    struct PNGLoader : public assets::Loader
+    struct PNGLoader : public assets::Loader<Texture2D>
     {
         PNGLoader();
-        ~PNGLoader();
 
-        bool LoadFile(std::wstring const& file) override;
-        std::wstring_view Extension() const override;
-
-        std::vector<Texture2D> textures;
+        Texture2D Load(std::wstring const& file) const override;
     };
-    struct JPGLoader : public assets::Loader
+    struct JPGLoader : public assets::Loader<Texture2D>
     {
         JPGLoader();
-        ~JPGLoader();
 
-        bool LoadFile(std::wstring const& file) override;
-        std::wstring_view Extension() const override;
-
-        std::vector<Texture2D> textures;
+        Texture2D Load(std::wstring const& file) const override;
     };
-    struct ShaderLoader : public assets::Loader
+    struct ShaderLoader : public assets::Loader<ShaderProgram>
     {
         ShaderLoader();
-        ~ShaderLoader();
 
-        bool LoadFile(std::wstring const& file) override;
-        std::wstring_view Extension() const override;
-
-        std::vector<ShaderProgram> shaders;
+        ShaderProgram Load(std::wstring const& file) const override;
     };
 
 }

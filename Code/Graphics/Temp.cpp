@@ -115,8 +115,16 @@ namespace ge2::gfx
         transformLoc = glGetUniformLocation(shaderProgram->Id(), "camera");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(cameraTransform));
 
-        jpgLoader.textures[0].MakeActive(0);
-        pngLoader.textures[0].MakeActive(1);
+        auto container = jpgLoader.File(L"container.jpg");
+        if (container)
+        {
+            container->MakeActive(0);
+        }
+        auto smiley = pngLoader.File(L"awesomeface.png");
+        if (smiley)
+        {
+            smiley->MakeActive(1);
+        }
         shapesSingleton.Cube().Draw();
     }
 
@@ -142,8 +150,16 @@ namespace ge2::gfx
         transformLoc = glGetUniformLocation(shaderProgram->Id(), "camera");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(cameraTransform));
 
-        jpgLoader.textures[0].MakeActive(0);
-        pngLoader.textures[0].MakeActive(1);
+        auto container = jpgLoader.File(L"container.jpg");
+        if (container)
+        {
+            container->MakeActive(0);
+        }
+        auto smiley = pngLoader.File(L"awesomeface.png");
+        if (smiley)
+        {
+            smiley->MakeActive(1);
+        }
         shapesSingleton.Cube().Draw();
     }
 

@@ -4,7 +4,6 @@
 
 namespace ge2::assets
 {
-    void AddLoader(Loader& loader);
-    void RemoveLoader(Loader const& loader);
+    void AddLoader(LoaderBase& loader, std::wstring_view const& extension);
     void LoadAllAssets();
 }
