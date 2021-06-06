@@ -1,9 +1,20 @@
 #include "Loaders.h"
+#include "AssetManager/Assets.h"
 
 #include <fstream>
 
 namespace ge2::gfx
 {
+    PNGLoader::PNGLoader()
+    {
+        assets::AddLoader(*this);
+    }
+
+    PNGLoader::~PNGLoader()
+    {
+        assets::RemoveLoader(*this);
+    }
+
     bool PNGLoader::LoadFile(std::wstring const& file)
     {
         std::string fileNarrow(file.begin(), file.end());
@@ -12,7 +23,17 @@ namespace ge2::gfx
     }
     std::wstring_view PNGLoader::Extension() const
     {
-        return L"png";
+        return std::wstring_view(L"png");
+    }
+
+    JPGLoader::JPGLoader()
+    {
+        assets::AddLoader(*this);
+    }
+
+    JPGLoader::~JPGLoader()
+    {
+        assets::RemoveLoader(*this);
     }
 
     bool JPGLoader::LoadFile(std::wstring const& file)
@@ -23,7 +44,17 @@ namespace ge2::gfx
     }
     std::wstring_view JPGLoader::Extension() const
     {
-        return L"jpg";
+        return std::wstring_view(L"jpg");
+    }
+
+    ShaderLoader::ShaderLoader()
+    {
+        assets::AddLoader(*this);
+    }
+
+    ShaderLoader::~ShaderLoader()
+    {
+        assets::RemoveLoader(*this);
     }
 
     bool ShaderLoader::LoadFile(std::wstring const& vertexFileName)
@@ -39,7 +70,7 @@ namespace ge2::gfx
     }
     std::wstring_view ShaderLoader::Extension() const
     {
-        return L"vert";
+        return std::wstring_view(L"vert");
     }
 
 }

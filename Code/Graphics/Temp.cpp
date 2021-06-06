@@ -34,8 +34,6 @@ namespace ge2::gfx
         gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
         glEnable(GL_DEPTH_TEST);
         shapesSingleton.Initialise();
-        assets::AddLoader(jpgLoader);
-        assets::AddLoader(pngLoader);
     }
 
     void ClearColour()

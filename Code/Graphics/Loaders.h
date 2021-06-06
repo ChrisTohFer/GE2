@@ -9,9 +9,11 @@
 
 namespace ge2::gfx
 {
-
     struct PNGLoader : public assets::Loader
     {
+        PNGLoader();
+        ~PNGLoader();
+
         bool LoadFile(std::wstring const& file) override;
         std::wstring_view Extension() const override;
 
@@ -19,6 +21,9 @@ namespace ge2::gfx
     };
     struct JPGLoader : public assets::Loader
     {
+        JPGLoader();
+        ~JPGLoader();
+
         bool LoadFile(std::wstring const& file) override;
         std::wstring_view Extension() const override;
 
@@ -26,6 +31,9 @@ namespace ge2::gfx
     };
     struct ShaderLoader : public assets::Loader
     {
+        ShaderLoader();
+        ~ShaderLoader();
+
         bool LoadFile(std::wstring const& file) override;
         std::wstring_view Extension() const override;
 
