@@ -20,18 +20,18 @@ namespace ge2::gfx
         gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
         glEnable(GL_DEPTH_TEST);
         m_shapes.Initialise();
-        ast::AddLoader(m_jpgLoader);
-        ast::AddLoader(m_pngLoader);
-        ast::AddLoader(m_shaderLoader);
+        assets::AddLoader(m_jpgLoader);
+        assets::AddLoader(m_pngLoader);
+        assets::AddLoader(m_shaderLoader);
     }
 
     Core::~Core()
     {
         g_core = nullptr;
 
-        ast::RemoveLoader(m_jpgLoader);
-        ast::RemoveLoader(m_pngLoader);
-        ast::RemoveLoader(m_shaderLoader);
+        assets::RemoveLoader(m_jpgLoader);
+        assets::RemoveLoader(m_pngLoader);
+        assets::RemoveLoader(m_shaderLoader);
     }
 
     void Core::ClearColour() const

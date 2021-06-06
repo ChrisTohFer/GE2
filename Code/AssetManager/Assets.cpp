@@ -1,12 +1,19 @@
 #include "Assets.h"
+#include "Paths.h"
 
+#include <cwctype>
 #include <filesystem>
 #include <iostream>
-#include <cwctype>
+#include <unordered_map>
 
 namespace
 {
-    std::unordered_map<std::wstring, ge2::ast::Loader*> loaders;
+    using LoaderMap = std::unordered_map<std::wstring_view, ge2::assets::Loader*>;
+    LoaderMap& Loaders()
+    {
+        static LoaderMap map;
+        return map;
+    }
 
     void LoadFile(std::wstring const& path)
     {
@@ -16,8 +23,8 @@ namespace
             auto extension = path.substr(extensionLocation + 1);
             std::transform(extension.begin(), extension.end(), extension.begin(), std::towlower);
 
-            auto loader = loaders.find(extension);
-            if (loader != loaders.end())
+            auto loader = Loaders().find(extension);
+            if (loader != Loaders().end())
             {
                 if (!loader->second->LoadFile(path))
                 {
@@ -29,7 +36,7 @@ namespace
         std::wcout << L"No loader for file:\t" << path << L"\n";
     }
 
-    void IterateDirectory(const wchar_t* directory)
+    void IterateDirectory(std::wstring_view directory)
     {
         using namespace std::filesystem;
 
@@ -43,22 +50,22 @@ namespace
     }
 }
 
-namespace ge2::ast
+namespace ge2::assets
 {
     void AddLoader(Loader& loader)
     {
-        loaders.emplace(loader.Extension(), &loader);
+        Loaders().emplace(loader.Extension(), &loader);
     }
 
     void RemoveLoader(Loader const& loader)
     {
-        loaders.erase(loader.Extension());
+        Loaders().erase(loader.Extension());
     }
 
     void LoadAllAssets()
     {
         using namespace std::filesystem;
 
-        IterateDirectory(L".\\Assets");
+        IterateDirectory(AssetsPath());
     }
 }

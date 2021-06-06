@@ -2,11 +2,7 @@
 
 #include "Loader.h"
 
-#include <memory>
-#include <string>
-#include <unordered_map>
-
-namespace ge2::ast
+namespace ge2::assets
 {
     void AddLoader(Loader& loader);
     void RemoveLoader(Loader const& loader);

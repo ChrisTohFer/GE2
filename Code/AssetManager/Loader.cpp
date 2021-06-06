@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-std::string ge2::ast::LoadTextFile(std::wstring const& fileName)
+std::string ge2::assets::LoadTextFile(std::wstring const& fileName)
 {
     //Get file size
     std::ifstream file(fileName);

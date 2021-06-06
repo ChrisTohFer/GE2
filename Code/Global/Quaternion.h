@@ -68,6 +68,7 @@ namespace ge2
         return q;
     }
 
+    //Not 100% sure that this is working correctly, but will revisit when it's actually needed
     inline Quaternion Quaternion::NLerp(Quaternion const& from, Quaternion to, float t)
     {
         //Taken from https://www.allegro.cc/forums/thread/599059 - modified to assume shortest path
@@ -91,12 +92,12 @@ namespace ge2
             ////* spherical linear interpolation (SLERP) */
             /// angle = acos(cos_angle);
             /// sin_angle  = sin(angle);
-            scale_from = 1.0 - t;  ///sin((1.0 - t) * angle) / sin_angle;
+            scale_from = 1.0f - t;  ///sin((1.0 - t) * angle) / sin_angle;
             scale_to = t;  ///sin(t         * angle) / sin_angle;
         }
         else {
             /* to prevent divide-by-zero, resort to linear interpolation */
-            scale_from = 1.0 - t;
+            scale_from = 1.0f - t;
             scale_to = t;
         }
         

@@ -10,24 +10,24 @@
 namespace ge2::gfx
 {
 
-    struct PNGLoader : public ast::Loader
+    struct PNGLoader : public assets::Loader
     {
         bool LoadFile(std::wstring const& file) override;
-        std::wstring Extension() const override;
+        std::wstring_view Extension() const override;
 
         std::vector<Texture2D> textures;
     };
-    struct JPGLoader : public ast::Loader
+    struct JPGLoader : public assets::Loader
     {
         bool LoadFile(std::wstring const& file) override;
-        std::wstring Extension() const override;
+        std::wstring_view Extension() const override;
 
         std::vector<Texture2D> textures;
     };
-    struct ShaderLoader : public ast::Loader
+    struct ShaderLoader : public assets::Loader
     {
         bool LoadFile(std::wstring const& file) override;
-        std::wstring Extension() const override;
+        std::wstring_view Extension() const override;
 
         std::vector<ShaderProgram> shaders;
     };

@@ -10,7 +10,7 @@ namespace ge2::gfx
         textures.push_back(Texture2D(fileNarrow.c_str(), true));
         return textures.back().Valid();
     }
-    std::wstring PNGLoader::Extension() const
+    std::wstring_view PNGLoader::Extension() const
     {
         return L"png";
     }
@@ -21,7 +21,7 @@ namespace ge2::gfx
         textures.push_back(Texture2D(fileNarrow.c_str(), false));
         return textures.back().Valid();
     }
-    std::wstring JPGLoader::Extension() const
+    std::wstring_view JPGLoader::Extension() const
     {
         return L"jpg";
     }
@@ -31,13 +31,13 @@ namespace ge2::gfx
         //assume that every .vert shader has a matching .frag shader
         std::wstring fragFileName = vertexFileName.substr(0, vertexFileName.find_last_of(L"vert")) + L"frag";
 
-        std::string vertexSource = ast::LoadTextFile(vertexFileName);
-        std::string fragSource = ast::LoadTextFile(fragFileName);
+        std::string vertexSource = assets::LoadTextFile(vertexFileName);
+        std::string fragSource = assets::LoadTextFile(fragFileName);
         shaders.push_back(ShaderProgram(vertexSource.data(), fragSource.data()));
 
         return shaders.back().CompiledWithoutError();
     }
-    std::wstring ShaderLoader::Extension() const
+    std::wstring_view ShaderLoader::Extension() const
     {
         return L"vert";
     }

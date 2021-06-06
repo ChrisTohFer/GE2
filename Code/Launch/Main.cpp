@@ -26,7 +26,7 @@ int main()
         ge2::InitialiseImgui(key);
         gfx::LoadTriangle();
         gfx::LoadShaderProgram();
-        ast::LoadAllAssets();
+        assets::LoadAllAssets();
     }
 
     Camera camera;
