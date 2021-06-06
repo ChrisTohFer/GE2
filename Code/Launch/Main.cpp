@@ -1,6 +1,7 @@
 #include "ImguiHelpers.h"
 
 #include "AssetManager/Assets.h"
+#include "AssetManager/Metadata.h"
 #include "Platform/Input.h"
 #include "Platform/Misc.h"
 #include "Platform/Window.h"
@@ -26,6 +27,8 @@ int main()
         ge2::InitialiseImgui(key);
         gfx::LoadTriangle();
         gfx::LoadShaderProgram();
+
+        assets::UpdateMetadata();
         assets::LoadAllAssets();
     }
 

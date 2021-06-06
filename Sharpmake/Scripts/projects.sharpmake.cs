@@ -47,6 +47,9 @@ namespace Projects
         {
             base.Configure(conf, target);
             conf.SetLib();
+
+            //Dependencies
+            conf.AddPrivateDependency<Platform>(target);
         }
     }
 
