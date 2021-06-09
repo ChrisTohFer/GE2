@@ -76,23 +76,6 @@ int main()
         camTrans.rotation.Euler(camTrans.rotation.Euler() + deltaEuler);
         //camera.LookAt(Vector3f::Zero());
 
-        ImGui::Begin("Camera euler");
-        ImGui::Text("%f", camTrans.rotation.Euler().x);
-        ImGui::Text("%f", camTrans.rotation.Euler().y);
-        ImGui::Text("%f", camTrans.rotation.Euler().z);
-        ImGui::End();
-        ImGui::Begin("Camera position");
-        ImGui::Text("%f", camTrans.position.x);
-        ImGui::Text("%f", camTrans.position.y);
-        ImGui::Text("%f", camTrans.position.z);
-        ImGui::End();
-        ImGui::Begin("Camera quaternion");
-        ImGui::Text("%f", camTrans.rotation.w);
-        ImGui::Text("%f", camTrans.rotation.v.x);
-        ImGui::Text("%f", camTrans.rotation.v.y);
-        ImGui::Text("%f", camTrans.rotation.v.z);
-        ImGui::End();
-
         ImGui::Begin("BoxControl");
         ImGui::SliderFloat3("Position", (float*)&box.position, -2.f, 2.f);
         ImGui::SliderFloat3("Scale", (float*)&box.scale, -1.f, 1.f);

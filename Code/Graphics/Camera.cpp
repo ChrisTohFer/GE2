@@ -25,10 +25,6 @@ ge2::Matrix4x4f ge2::Camera::Matrix() const
         0.f, 0.f, 0.f, 1.f
     };
 
-    ImGui::Begin("Camera");
-    ImGui::Text("%f, %f, %f", transform->position.x, transform->position.y, transform->position.z);
-    ImGui::End();
-
     //Rotate and flip so +z is forward;
     return (Quaternion::FromEuler(Vector3f{ 0.f, PI, 0.f }) * transform->rotation.Inverse()).RotationMatrix() * result;
 }
