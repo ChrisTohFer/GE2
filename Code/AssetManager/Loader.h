@@ -3,55 +3,66 @@
 #include "Metadata.h"
 #include "Platform/Guid.h"
 
+#include <array>
 #include <string>
 #include <unordered_map>
 
 namespace ge2::assets
 {
     //Forward dec
-    void AddLoader(struct LoaderBase& loader, std::wstring_view const& extension);
+    void AddLoader(class LoaderBase& loader, std::wstring_view const& extension);
     //
 
-    std::string LoadTextFile(std::wstring const& file);
-
-    struct LoaderBase
+    class LoaderBase
     {
+    public:
         virtual void LoadFile(std::wstring const& file, std::wstring const& filename) = 0;
     };
 
-    template<typename LOADED_TYPE>
-    struct Loader : LoaderBase
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    class Loader : LoaderBase
     {
-        std::unordered_map<GUID, LOADED_TYPE> files;
-        
-        Loader(std::wstring_view const& extension);
-        
-        void LoadFile(std::wstring const& file, std::wstring const& filename) final;
-        virtual LOADED_TYPE Load(std::wstring const& file) const = 0;
+    public:
+        using FileMap = std::unordered_map<GUID, LOADED_TYPE>;
+        using ExtensionArray = std::array<std::wstring_view, NUM_EXTENSIONS>;
 
+        Loader(ExtensionArray const& extensions);
+        
         LOADED_TYPE const* File(GUID guid);
         LOADED_TYPE const* File(std::wstring_view const& filename);
+
+        FileMap const& Files() const;
+        ExtensionArray const& Extensions() const;
+
+        bool SupportsExtension(std::wstring const&) const;
+
+        void LoadFile(std::wstring const& file, std::wstring const& filename) final;
+
+    protected:
+        virtual LOADED_TYPE Load(std::wstring const& file) const = 0;
+
+    private:
+        FileMap m_files;
+        ExtensionArray m_extensions;
     };
 
     //Function definitions
 
-    template<typename LOADED_TYPE>
-    inline Loader<LOADED_TYPE>::Loader(std::wstring_view const& extension)
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline Loader<LOADED_TYPE, NUM_EXTENSIONS>::Loader(ExtensionArray const& extensions)
+        : m_extensions(extensions)
     {
-        AddLoader(*this, extension);
+        for (auto& extension : m_extensions)
+        {
+            AddLoader(*this, extension);
+        }
     }
 
-    template<typename LOADED_TYPE>
-    inline void Loader<LOADED_TYPE>::LoadFile(std::wstring const& file, std::wstring const& filename)
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(GUID guid)
     {
-        files.emplace(GUIDFromFilename(filename), Load(file));
-    }
-
-    template<typename LOADED_TYPE>
-    inline LOADED_TYPE const* Loader<LOADED_TYPE>::File(GUID guid)
-    {
-        auto it = files.find(guid);
-        if (it != files.end())
+        auto it = m_files.find(guid);
+        if (it != m_files.end())
         {
             return &it->second;
         }
@@ -59,10 +70,41 @@ namespace ge2::assets
         return nullptr;
     }
 
-    template<typename LOADED_TYPE>
-    inline LOADED_TYPE const* Loader<LOADED_TYPE>::File(std::wstring_view const& filename)
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(std::wstring_view const& filename)
     {
         return File(GUIDFromFilename(filename));
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline Loader<LOADED_TYPE, NUM_EXTENSIONS>::template FileMap const& Loader<LOADED_TYPE, NUM_EXTENSIONS>::Files() const
+    {
+        return m_files;
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline Loader<LOADED_TYPE, NUM_EXTENSIONS>::template ExtensionArray const& Loader<LOADED_TYPE, NUM_EXTENSIONS>::Extensions() const
+    {
+        return m_extensions;
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline bool Loader<LOADED_TYPE, NUM_EXTENSIONS>::SupportsExtension(std::wstring const& extension) const
+    {
+        for (auto& ext : m_extensions)
+        {
+            if (ext == extension)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline void Loader<LOADED_TYPE, NUM_EXTENSIONS>::LoadFile(std::wstring const& file, std::wstring const& filename)
+    {
+        m_files.emplace(GUIDFromFilename(filename), Load(file));
     }
 
 }

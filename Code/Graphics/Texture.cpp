@@ -1,7 +1,8 @@
 #include "Texture.h"
 
+#include "AssetManager/CommonLoaders.h"
+#include "AssetManager/Metadata.h"
 #include "glad/glad.h"
-#include "stb_image.h"
 
 #include <iostream>
 
@@ -16,10 +17,18 @@ namespace ge2::gfx
     {
     }
 
-    Texture2D::Texture2D(const char* filename, bool hasAlphaChannel)
+    Texture2D::Texture2D(assets::Image const& image)
+        : m_valid(false)
+        , m_width(image.Width())
+        , m_height(image.Height())
+        , m_nChannels(image.Channels())
+        , m_id(0)
     {
-        stbi_set_flip_vertically_on_load(1);
-        unsigned char* data = stbi_load(filename, &m_width, &m_height, &m_nChannels, 0);
+        if (!image.Valid())
+        {
+            return;
+        }
+        m_valid = true;
 
         glGenTextures(1, &m_id);
         glBindTexture(GL_TEXTURE_2D, m_id);
@@ -27,28 +36,17 @@ namespace ge2::gfx
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        if (data)
+        //Assuming 4 channels means there's a transparency channel, not sure if this is always true
+        if (image.Channels() == 4)
         {
-            m_valid = true;
-
-            if (hasAlphaChannel)
-            {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            }
-            else
-            {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            }
-            glGenerateMipmap(GL_TEXTURE_2D);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.Data());
         }
         else
         {
-            m_valid = false;
-
-            std::cout << "ERROR::TEXTURE::LOAD_FAILED\n" << stbi_failure_reason() << std::endl;
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image.Data());
         }
 
-        stbi_image_free(data);
+        glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     Texture2D::Texture2D(Texture2D&& other) noexcept
@@ -100,4 +98,30 @@ namespace ge2::gfx
         return m_valid;
     }
 
+    std::unordered_map<GUID, Texture2D> g_textures;
+
+    Texture2D const* TextureFromGuid(GUID guid)
+    {
+        if (g_textures.size() == 0)
+        {
+            auto const& loader = assets::ImageLoader::Instance();
+            for (auto const& image : loader.Files())
+            {
+                g_textures.emplace(image.first, Texture2D(image.second));
+            }
+        }
+
+        auto it = g_textures.find(guid);
+        if (it != g_textures.end())
+        {
+            return &it->second;
+        }
+
+        return nullptr;
+    }
+
+    Texture2D const* TextureFromFilename(std::wstring_view const& filename)
+    {
+        return TextureFromGuid(assets::GUIDFromFilename(filename));
+    }
 }

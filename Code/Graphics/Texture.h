@@ -1,5 +1,10 @@
 #pragma once
 
+#include "AssetManager/Image.h"
+#include "Platform/Guid.h"
+
+#include <string_view>
+
 namespace ge2::gfx
 {
 
@@ -7,7 +12,7 @@ namespace ge2::gfx
     {
     public:
         Texture2D();
-        Texture2D(const char* filename, bool hasAlphaChannel);
+        Texture2D(assets::Image const&);
         Texture2D(Texture2D const&) = delete;
         Texture2D(Texture2D&&) noexcept;
         Texture2D& operator=(Texture2D const&) = delete;
@@ -24,5 +29,8 @@ namespace ge2::gfx
         int          m_nChannels;
         int          m_valid;
     };
+
+    Texture2D const* TextureFromGuid(GUID);
+    Texture2D const* TextureFromFilename(std::wstring_view const&);
 
 }

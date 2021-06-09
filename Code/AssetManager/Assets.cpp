@@ -8,6 +8,7 @@
 
 namespace
 {
+    //Map extensions to appropriate loader
     using LoaderMap = std::unordered_map<std::wstring_view, ge2::assets::LoaderBase*>;
     LoaderMap& Loaders()
     {

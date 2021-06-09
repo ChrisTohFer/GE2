@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Loaders.h"
 #include "Shapes.h"
 
 #include "Platform/Window.h"
@@ -22,8 +21,5 @@ namespace ge2::gfx
 
     private:
         Shapes m_shapes;
-        JPGLoader m_jpgLoader;
-        PNGLoader m_pngLoader;
-        ShaderLoader m_shaderLoader;
     };
 }

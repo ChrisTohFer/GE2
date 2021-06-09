@@ -1,6 +1,5 @@
 #include "Temp.h"
 
-#include "Loaders.h"
 #include "Renderer.h"
 #include "ShaderProgram.h"
 #include "Shapes.h"
@@ -8,6 +7,7 @@
 #include "VertexArray.h"
 
 #include "AssetManager/Assets.h"
+#include "AssetManager/CommonLoaders.h"
 
 #include "glad/glad.h"
 #include "SFML/Window.hpp"
@@ -25,8 +25,6 @@ namespace ge2::gfx
         glm::mat4      cameraTransform;
         int            screenWidth, screenHeight;
         Shapes shapesSingleton;
-        JPGLoader jpgLoader;
-        PNGLoader pngLoader;
     }
 
     void Init()
@@ -115,12 +113,12 @@ namespace ge2::gfx
         transformLoc = glGetUniformLocation(shaderProgram->Id(), "camera");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(cameraTransform));
 
-        auto container = jpgLoader.File(L"container.jpg");
+        auto container = TextureFromFilename(L"container.jpg");
         if (container)
         {
             container->MakeActive(0);
         }
-        auto smiley = pngLoader.File(L"awesomeface.png");
+        auto smiley = TextureFromFilename(L"awesomeface.png");
         if (smiley)
         {
             smiley->MakeActive(1);
@@ -150,12 +148,12 @@ namespace ge2::gfx
         transformLoc = glGetUniformLocation(shaderProgram->Id(), "camera");
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(cameraTransform));
 
-        auto container = jpgLoader.File(L"container.jpg");
+        auto container = TextureFromFilename(L"container.jpg");
         if (container)
         {
             container->MakeActive(0);
         }
-        auto smiley = pngLoader.File(L"awesomeface.png");
+        auto smiley = TextureFromFilename(L"awesomeface.png");
         if (smiley)
         {
             smiley->MakeActive(1);
