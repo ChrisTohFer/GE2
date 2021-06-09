@@ -28,7 +28,6 @@ int main()
         gfx::LoadTriangle();
         gfx::LoadShaderProgram();
 
-        assets::UpdateMetadata();
         assets::LoadAllAssets();
     }
 

@@ -1,4 +1,5 @@
 #include "Assets.h"
+#include "Metadata.h"
 #include "Paths.h"
 
 #include <cwctype>
@@ -8,16 +9,36 @@
 
 namespace
 {
+    using namespace ge2::assets;
+
     //Map extensions to appropriate loader
-    using LoaderMap = std::unordered_map<std::wstring_view, ge2::assets::LoaderBase*>;
+    using LoaderMap = std::unordered_map<std::wstring_view, LoaderBase*>;
     LoaderMap& Loaders()
     {
         static LoaderMap map;
         return map;
     }
 
-    void LoadFile(std::filesystem::path const& path)
+    bool LoadFile(Metadata& metadata)
     {
+        if (metadata.loadStarted)
+        {
+            _ASSERT(metadata.loaded); //Circular dependency
+            return true;
+        }
+
+        for (auto& dependency : metadata.dependencies)
+        {
+            auto metadata = GetMetadata(dependency);
+            _ASSERT(metadata);      //Failed to load metadata of dependency
+            if (metadata)
+            {
+                auto success = LoadFile(*metadata);
+                _ASSERT(success);   //Failed to load dependency
+            }
+        }
+
+        std::filesystem::path path(metadata.path);
         if (path.has_extension())
         {
             auto extension = path.extension().wstring();
@@ -27,23 +48,12 @@ namespace
             if (loader != Loaders().end())
             {
                 loader->second->LoadFile(path, path.filename());
-                return;
+                return true;
             }
         }
         std::wcout << L"No loader for file:\t" << path << L"\n";
-    }
 
-    void IterateDirectory(std::wstring_view const& directory)
-    {
-        using namespace std::filesystem;
-
-        for (auto& entry : recursive_directory_iterator(directory))
-        {
-            if (!entry.is_directory())
-            {
-                LoadFile(entry.path().wstring());
-            }
-        }
+        return false;
     }
 }
 
@@ -58,6 +68,9 @@ namespace ge2::assets
     {
         using namespace std::filesystem;
 
-        IterateDirectory(AssetsPath());
+        for (auto& entry : GetAllMetadata())
+        {
+            LoadFile(entry.second);
+        }
     }
 }

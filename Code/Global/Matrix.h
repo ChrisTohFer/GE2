@@ -83,14 +83,14 @@ namespace ge2
     template<typename VALUE_TYPE, int ROWS, int COLUMNS>
     inline VALUE_TYPE& Matrix<VALUE_TYPE, ROWS, COLUMNS>::Get(int row, int column)
     {
-        _ASSERT(row < ROWS&& column < COLUMNS);
+        _ASSERT(row < ROWS&& column < COLUMNS); //Requested element out of bounds
         return values[row][column];
     }
 
     template<typename VALUE_TYPE, int ROWS, int COLUMNS>
     inline VALUE_TYPE Matrix<VALUE_TYPE, ROWS, COLUMNS>::Get(int row, int column) const
     {
-        _ASSERT(row < ROWS&& column < COLUMNS);
+        _ASSERT(row < ROWS&& column < COLUMNS); //Requested element out of bounds
         return values[row][column];
     }
 

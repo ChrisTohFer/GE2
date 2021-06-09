@@ -7,111 +7,152 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <unordered_map>
-
-namespace
-{
-    using MetadataMap = std::unordered_map<ge2::GUID, std::wstring>;
-
-    MetadataMap g_metadata;
-
-    std::wstring MetadataFilename()
-    {
-        return L"metadata.meta";
-    }
-    std::wstring MetadataFile()
-    {
-        return std::wstring(ge2::assets::AssetsPath()) + MetadataFilename();
-    }
-}
 
 namespace ge2::assets
 {
-    void LoadMetadata()
+    namespace
     {
-        g_metadata.clear();
-
-        //Could make this a ifstream and cut out the middleman
-        std::wifstream file(MetadataFile());
-
-        std::wstring line;
-        while (std::getline(file, line))
+        std::wstring MetadataFilename()
         {
-            std::wistringstream lineStream(line);
+            return L"metadata.meta";
+        }
+        std::wstring MetadataFile()
+        {
+            return std::wstring(AssetsPath()) + MetadataFilename();
+        }
 
-            GUID guid;
-            lineStream >> guid;
+        bool LoadMetadata();
 
-            std::wstring fileName;
-            lineStream >> fileName;
+        MetadataMap g_metadata;
+        bool g_loadAtStaticInitCheese = LoadMetadata();
 
-            g_metadata.emplace(guid, fileName);
+        void WriteMetadata(std::wostream& output, MetadataMap& map)
+        {
+            for (auto& entry : map)
+            {
+                auto& guid = entry.first;
+                auto& metadata = entry.second;
+                output << guid << L" " << metadata.name;
+
+                for (auto const& dependency : metadata.dependencies)
+                {
+                    output << L" " << dependency;
+                }
+
+                output << L"\n";
+            }
+        }
+
+        void UpdateMetadata()
+        {
+            //Use filesystem to check existing metadata against files
+            MetadataMap updatedMap;
+            using namespace std::filesystem;
+            for (auto& entry : recursive_directory_iterator(AssetsPath()))
+            {
+                if (entry.is_directory())
+                {
+                    continue;
+                }
+
+                auto& path = entry.path();
+                auto name = path.filename().wstring();
+                if (name == MetadataFilename())
+                {
+                    continue;
+                }
+
+                //Check to see if we already know this file
+                auto guid = GUIDFromFilename(name);
+                if (guid != NULL_GUID)
+                {
+                    //Update existing data in case path/extension aren't already known
+                    Metadata metadata = g_metadata[guid];
+                    metadata.path = path.wstring();
+                    metadata.extension = path.extension().wstring();
+
+                    updatedMap.emplace(guid, metadata);
+                }
+                else
+                {
+                    //Create new data
+                    guid = CreateGuid();
+                    updatedMap.emplace(guid, Metadata{ guid, path.wstring(), name, path.extension().wstring() });
+                }
+
+            }
+            g_metadata = updatedMap;
+        }
+
+        //Load metadata from the metadata file
+        bool LoadMetadata()
+        {
+            std::wifstream file(MetadataFile());
+
+            std::wstring line;
+            while (std::getline(file, line))
+            {
+                std::wistringstream lineStream(line);
+
+                Metadata entry;
+                lineStream >> entry.guid;
+                lineStream >> entry.name;
+
+                GUID dependency;
+                while (lineStream >> dependency)
+                {
+                    entry.dependencies.push_back(dependency);
+                }
+
+                g_metadata.emplace(entry.guid, entry);
+            }
+
+            //Use update to update path and extension fields, and remove metadata for non-existing files
+            UpdateMetadata();
+
+            //Returning a value just so we can run this at static init
+            return true;
         }
     }
 
-    void UpdateMetadata()
+    void WriteMetadata()
     {
-        //Load current metadata if not already loaded
-        if (g_metadata.empty())
-        {
-            LoadMetadata();
-        }
-
-        //Use filesystem to check for new files or missing files
-        MetadataMap updatedMap;
-        using namespace std::filesystem;
-        for (auto& entry : recursive_directory_iterator(AssetsPath()))
-        {
-            if (entry.is_directory())
-            {
-                continue;
-            }
-
-            auto name = entry.path().filename().wstring();
-            if (name == MetadataFilename())
-            {
-                continue;
-            }
-
-            //Check to see if we already know this file, and use the same GUID if we do
-            auto guid = GUIDFromFilename(name);
-            if (guid == NULL_GUID)
-            {
-                guid = CreateGuid();
-            }
-            
-            updatedMap.emplace(guid, name);
-        }
-        g_metadata = updatedMap;
+        UpdateMetadata();
 
         std::wofstream file(MetadataFile());
-        for (auto& entry : updatedMap)
-        {
-            file << entry.first << L" " << entry.second << L"\n";
-        }
+        WriteMetadata(file, g_metadata);
     }
 
     GUID GUIDFromFilename(std::wstring_view const& filename)
     {
         for (auto& entry : g_metadata)
         {
-            if (entry.second == filename)
+            if (entry.second.name == filename)
             {
                 return entry.first;
             }
         }
 
+        _ASSERT(false); //Attempting to load non existing metadata
+
         return NULL_GUID;
     }
 
-    std::wstring FilenameFromGUID(GUID guid)
+    MetadataMap& GetAllMetadata()
+    {
+        return g_metadata;
+    }
+
+    Metadata* GetMetadata(GUID guid)
     {
         auto it = g_metadata.find(guid);
         if (it != g_metadata.end())
         {
-            return it->second;
+            return &it->second;
         }
+
+        _ASSERT(false); //Attempting to load non existing metadata
         
-        return std::wstring(L"");
+        return nullptr;
     }
 }
