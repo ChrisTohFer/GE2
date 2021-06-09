@@ -29,11 +29,11 @@ namespace
 
         for (auto& dependency : metadata.dependencies)
         {
-            auto metadata = GetMetadata(dependency);
-            _ASSERT(metadata);      //Failed to load metadata of dependency
-            if (metadata)
+            auto dependencyMetadata = GetMetadata(dependency);
+            _ASSERT(dependencyMetadata);      //Failed to load metadata of dependency
+            if (dependencyMetadata)
             {
-                auto success = LoadFile(*metadata);
+                [[maybe_unused]] auto success = LoadFile(*dependencyMetadata);
                 _ASSERT(success);   //Failed to load dependency
             }
         }
