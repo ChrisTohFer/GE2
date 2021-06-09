@@ -3,6 +3,8 @@
 #include "Loader.h"
 #include "Paths.h"
 
+#include "Platform/Guid.h"
+
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -77,10 +79,21 @@ namespace ge2::assets
                 {
                     //Create new data
                     guid = CreateGuid();
-                    updatedMap.emplace(guid, Metadata{ guid, path.wstring(), name, path.extension().wstring() });
+                    updatedMap.emplace(guid, Metadata{ guid, name, {}, path.wstring(), path.extension().wstring() });
                 }
-
             }
+
+            //Mark old metadata as missing if we didn't find the file
+            for (auto& entry : g_metadata)
+            {
+                auto it = updatedMap.find(entry.first);
+                if (it == updatedMap.end())
+                {
+                    it->second.missing = true;
+                    updatedMap.emplace(it->first, it->second);
+                }
+            }
+
             g_metadata = updatedMap;
         }
 
@@ -154,5 +167,17 @@ namespace ge2::assets
         _ASSERT(false); //Attempting to load non existing metadata
         
         return nullptr;
+    }
+
+    Metadata* AddMetadata()
+    {
+        auto guid = ge2::CreateGuid();
+        g_metadata.emplace(guid, Metadata{ guid });
+        return &g_metadata[guid];
+    }
+
+    void RemoveMetadata(GUID guid)
+    {
+        g_metadata.erase(guid);
     }
 }

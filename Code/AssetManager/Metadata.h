@@ -11,12 +11,17 @@ namespace ge2::assets
 {
     struct Metadata
     {
+        //Read from metadata file
         GUID guid;
-        std::wstring path;
         std::wstring name;
-        std::wstring extension;
         std::vector<GUID> dependencies;
 
+        //Determined at runtime
+        std::wstring path;
+        std::wstring extension;
+        bool missing = false;
+
+        //Used during loading
         bool loadStarted = false;   //Used to identify recursive dependencies
         bool loaded = false;
     };
@@ -30,5 +35,10 @@ namespace ge2::assets
     std::wstring FilenameFromGUID(GUID);
 
     MetadataMap& GetAllMetadata();
+
+    //Prefer storing GUIDs over pointers - pointers may be invalidated when refreshing metadata
     Metadata* GetMetadata(GUID);
+
+    Metadata* AddMetadata();
+    void RemoveMetadata(GUID);
 }
