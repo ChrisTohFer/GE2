@@ -128,6 +128,11 @@ namespace ge2::assets
         }
     }
 
+    void RefreshMetadata()
+    {
+        UpdateMetadata();
+    }
+
     void WriteMetadata()
     {
         UpdateMetadata();

@@ -28,7 +28,7 @@ namespace ge2::assets
 
     using MetadataMap = std::unordered_map<ge2::GUID, Metadata>;
 
-
+    void RefreshMetadata();
     void WriteMetadata();
 
     GUID GUIDFromFilename(std::wstring_view const&);
