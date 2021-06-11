@@ -3,6 +3,16 @@ using Main;
 
 namespace ThirdParty
 {
+    class ThirdPartyProject : Projects.DefaultProject
+    {
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            conf.SolutionFolder = "0_Thirdparty";
+
+            base.Configure(conf, target);
+        }
+    }
+
 
     static class SFML
     {
@@ -44,7 +54,7 @@ namespace ThirdParty
     }
 
     [Generate]
-    class Glad : Projects.DefaultProject
+    class Glad : ThirdPartyProject
     {
         public Glad()
         {
@@ -55,14 +65,13 @@ namespace ThirdParty
         {
             base.Configure(conf, target);
             conf.SetLib();
-            conf.SolutionFolder = "ThirdParty";
 
             conf.IncludePaths.Add("include");
         }
     }
 
     [Generate]
-    class GLM : Projects.DefaultProject
+    class GLM : ThirdPartyProject
     {
         public GLM()
         {
@@ -73,7 +82,6 @@ namespace ThirdParty
         {
             base.Configure(conf, target);
             conf.SetLib();
-            conf.SolutionFolder = "ThirdParty";
 
             conf.Options.Add(Options.Vc.General.WarningLevel.Level0);
             conf.IncludePaths.Add(SourceRootPath);
@@ -81,7 +89,7 @@ namespace ThirdParty
     }
 
     [Generate]
-    class Imgui : Projects.DefaultProject
+    class Imgui : ThirdPartyProject
     {
         public Imgui()
         {
@@ -92,7 +100,6 @@ namespace ThirdParty
         {
             base.Configure(conf, target);
             conf.SetLib();
-            conf.SolutionFolder = "ThirdParty";
 
             //Dependencies
             conf.AddPrivateDependency<Glad>(target);
@@ -103,7 +110,7 @@ namespace ThirdParty
     }
 
     [Generate]
-    class STBImage : Projects.DefaultProject
+    class STBImage : ThirdPartyProject
     {
         public STBImage()
         {
@@ -114,7 +121,6 @@ namespace ThirdParty
         {
             base.Configure(conf, target);
             conf.SetLib();
-            conf.SolutionFolder = "ThirdParty";
 
             //Settings
             conf.IncludePaths.Add(SourceRootPath);
