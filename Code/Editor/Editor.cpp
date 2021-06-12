@@ -1,5 +1,7 @@
 #include "Editor.h"
 
+#include "Window.h" //Editor/window
+
 #include "Graphics/Temp.h"
 #include "Platform/ImguiHelpers.h"
 #include "Platform/Window.h"
@@ -31,6 +33,7 @@ namespace ge2
                 ge2::ImguiBeginFrame(input);
             }
 
+            ed::Window::DrawAll();
 
             //Draw and display
             {
