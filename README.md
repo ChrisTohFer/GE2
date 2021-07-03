@@ -6,26 +6,29 @@ This file is a high level summary of the folder layout and different projects - 
 
 ### Content
 
-[Project Layout](#project-layout)  
- [Assets](#assets)  
- [Code](#code)  
- [Thirdparty](#thirdparty)  
- [Sharpmake](#sharpmake)  
- [Generated](#generated)  
-[Third party Libraries and Projects](#third-party-libraries-and-projects)  
- [Glad](#glad)  
- [Glm](#glm)  
- [ImGui](#imgui)  
- [SFML](#sfml)  
- [stb_image](#stb_image)  
-[Engine Projects](#engine-projects)  
- [AssetManager](#assetmanager)  
- [Global](#global)  
- [Graphics](#graphics)  
- [Platform](#platform)  
-[Other Projects](#other-projects)  
- [Editor](#editor)  
- [Launch](#launch)  
+[Project Layout](#project-layout)
+ * [Assets](#assets)
+ * [Code](#code)
+ * [Thirdparty](#thirdparty)
+ * [Sharpmake](#sharpmake)
+ * [Generated](#generated)
+ 
+[Third party Libraries and Projects](#third-party-libraries-and-projects)
+ * [Glad](#glad)
+ * [Glm](#glm)
+ * [ImGui](#imgui)
+ * [SFML](#sfml)
+ * [stb_image](#stb_image)
+ 
+[Engine Projects](#engine-projects)
+ * [AssetManager](#assetmanager)
+ * [Global](#global)
+ * [Graphics](#graphics)
+ * [Platform](#platform)
+ 
+[Other Projects](#other-projects)
+ * [Editor](#editor)
+ * [Launch](#launch)
 
 ## Project layout
 
@@ -84,7 +87,7 @@ SFML is the "Simple Fast Multimedia Library", and is split into 5 modules:
 4. Audio
 5. Network
 
-In GE2, graphics are implemented via OpenGL and networking isn't currently within scope. Thus we mainly rely on the window and Audio modules (audio will come in the future). Acquired from https://www.sfml-dev.org/
+In GE2, graphics are implemented via OpenGL and networking isn't currently within scope. Thus we mainly rely on the window and audio modules (audio will come in the future). Acquired from https://www.sfml-dev.org/
 
 ### stb_image
 
