@@ -9,6 +9,7 @@ This file is a high level summary of the folder layout and different projects - 
 [Project Layout](#project-layout)
  * [Assets](#assets)
  * [Code](#code)
+ * [Docs](#docs)
  * [Thirdparty](#thirdparty)
  * [Sharpmake](#sharpmake)
  * [Generated](#generated)
@@ -41,6 +42,10 @@ When running GE2 from visual studio assets will be loaded from this folder. It's
 ### Code
 
 Just like it sounds, this directory contains all the .h and .cpp files for the various projects in GE2 (not including third party projects). It is split into subdirectories that share the exact name of projects in the solution. This is also the location for any other files that must go into the projects, but up to this point I haven't had any need for non-code files to be added to the solution.
+
+### Docs
+
+You are here. Contains all documentation including this file and some project specific documentation with more detailed API references.
 
 ### Thirdparty
 
@@ -99,19 +104,21 @@ This section covers projects which handle core features of the engine such as wi
 
 ### AssetManager
 
-
+AssetManager is responsible for discovering, loading, and in some cases writing to assets in the [Assets directory](#assets). Additionally, it manages the metadata file which is used to match assets to GUIDs and store various other information. Through AssetManager other projects can access assets by filename, GUID, or by iterating over all discovered files.
 
 ### Global
 
+Global is a header only project which can be accessed by all other projects in the solution. It contains widely used types that have no dependencies, such as vectors, quaternions and transforms. It also contains constants and may be used for some configuration dependent preprocessor definitions in the future.
 
+As it stands, what should go in this project is quite loosely defined and is subject to change. It is useful for for anything that is widely used though. The one rule that binds the project together is that everything within the project must not depend on anything outside it, besides the standard library.
 
 ### Graphics
 
-
+As you might expect, this project handles graphics. Specifically it encapsulates GE2's use of OpenGL and exposes higher level types such as renderers, which enables meshes, shaders, textures etc to be grouped into a drawable object in 3D space.
 
 ### Platform
 
-
+GE2 is not currently intended to be portable across operating systems and is currently locked to Windows. Despite this, Platform is indended to encapsulate all usage of the operating system. This allows the potential for being cross-platform in the future, and is good practice either way.
 
 ## Other Projects
 
