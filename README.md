@@ -2,6 +2,31 @@
 
 GE2/Game Engine 2/Gettoo is a game engine that I'm working on for learning purposes. The aim is to become more familiar with the essential components of a game engine, how they work together, and how they can be developed in a scalable way.
 
+This file is a high level summary of the folder layout and different projects - more detailed info on each project will be provided in additional documentation files.
+
+### Content
+
+[Project Layout](#project-layout)
+ [Assets](#assets)
+ [Code](#code)
+ [Thirdparty](#thirdparty)
+ [Sharpmake](#sharpmake)
+ [Generated](#generated)
+[Third party Libraries and Projects](#third-party-libraries-and-projects)
+ [Glad](#glad)
+ [Glm](#glm)
+ [ImGui](#imgui)
+ [SFML](#sfml)
+ [stb_image](#stb_image)
+[Engine Projects](#engine-projects)
+ [AssetManager](#assetmanager)
+ [Global](#global)
+ [Graphics](#graphics)
+ [Platform](#platform)
+[Other Projects](#other-projects)
+ [Editor](#editor)
+ [Launch](#launch)
+
 ## Project layout
 
 ### Assets
@@ -20,7 +45,7 @@ All third party libraries are contained within subdirectories of this directory.
 
 ### Sharpmake
 
-Sharpmake is an open source tool built by Ubisoft which is used to generate visual studio project and solution files via C# scripts. It's very useful for cleanly defining the settings and dependencies for a large number of projects. This may be similar to other tools such as CMake, although admittedly I haven't used CMake so I can't say for certain! (one day I'll resolve this).
+Sharpmake is an open source tool built by Ubisoft which is used to generate visual studio project and solution files via C# scripts. It's very useful for cleanly defining the settings and dependencies for a large number of projects. This may be similar to other tools such as CMake, although admittedly I haven't used CMake so I can't say for certain! (one day I'll resolve this). You can find more on sharpmake here: https://github.com/ubisoft/Sharpmake
 
 The sharpmake folder is split into the sharpmake application (containing exe and dll files which don't need to be touched) and Scripts folders. The scripts folder contains a C# solution that defines all the properties and dependencies of the C++ solution used to build GE2 - I won't be documenting how this works for the time being unless I find more time or it grows more complicated.
 
@@ -32,19 +57,38 @@ The generated folder is the root directory of ALL temporary files in GE2. It con
 
 Generally, I try to avoid having to dig through the Generated folder itself. I use .bat files to open the solution from the GE2 root directory.
 
-## Third party libraries and projects
+## Third party Libraries and Projects
 
 Due to the learning aims of this project I generally want to implement as many features as I can by myself. There is some functionality however which is handed off to third party libraries in the interest of actually finishing the project one day. Over time, some of these may be replaced by my own solutions.
 
 ### Glad
 
+An OpenGL loading library, this loads pointers to OpenGL interface functions for graphics implementation. Acquired from https://glad.dav1d.de/
+
 ### Glm
+
+A mathematics library for graphics software, which provides functionality regarding tranform matrices etc. Currently GE2 doesn't use this heavily, and it may be phased out in favour of doing the maths myself. Acquired from https://github.com/g-truc/glm
 
 ### ImGui
 
+ImGui is an _Immediate Mode GUI_, providing simple UI for debug or development purposes. In GE2 this is intended to be used for the editor and for debugging. Acquired from https://github.com/ocornut/imgui
+
+ImGui requires that you create a renderer backend and a platform backend to help it hook into your native graphics and input - in GE2 these are defined in the _Platform_ project.
+
 ### SFML
 
+SFML is the "Simple Fast Multimedia Library", and is split into 5 modules:
+1. System
+2. Window
+3. Graphics
+4. Audio
+5. Network
+
+In GE2, graphics are implemented via OpenGL and networking isn't currently within scope. Thus we mainly rely on the window and Audio modules (audio will come in the future). Acquired from https://www.sfml-dev.org/
+
 ### stb_image
+
+A single header library which helps to load image files of various types - currently used to load .png and .jpg files for textures. Acquired from https://github.com/nothings/stb
 
 ## Engine Projects
 
@@ -52,17 +96,27 @@ This section covers projects which handle core features of the engine such as wi
 
 ### AssetManager
 
+
+
 ### Global
+
+
 
 ### Graphics
 
+
+
 ### Platform
+
+
 
 ## Other Projects
 
 I may come up with a better name for this section, but for now it covers whatever projects are left.
 
 ### Editor
+
+
 
 ### Launch
 
