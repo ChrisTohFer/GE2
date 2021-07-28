@@ -8,8 +8,6 @@
 
 namespace ge2::ed
 {
-    using WindowId = unsigned int;
-
     class Window
     {
     public:
