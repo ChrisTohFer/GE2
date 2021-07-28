@@ -2,6 +2,7 @@
 
 #include "Window.h" //Editor/window
 
+#include "Graphics/Core.h"
 #include "Graphics/Temp.h"
 #include "Platform/ImguiHelpers.h"
 #include "Platform/Window.h"

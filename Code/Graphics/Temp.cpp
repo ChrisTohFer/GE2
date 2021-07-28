@@ -21,7 +21,6 @@ namespace ge2::gfx
 
     namespace {
         ShaderProgram* shaderProgram = nullptr;
-        VertexArray* vertexArray = nullptr;
         glm::mat4      cameraTransform;
         int            screenWidth, screenHeight;
     }
@@ -32,44 +31,11 @@ namespace ge2::gfx
         glEnable(GL_DEPTH_TEST);
     }
 
-    void ClearColour()
-    {
-        glClearColor(0, 0, 0, 1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
-    void Display(Window::WindowKey const& key)
-    {
-        key.Window()->display();
-    }
-
     void Update(int sizeX, int sizeY)
     {
         glViewport(0, 0, sizeX, sizeY);
         screenWidth = sizeX;
         screenHeight = sizeY;
-    }
-
-    void LoadTriangle()
-    {
-        std::vector<float> vertices = {
-            // positions          // texture coords
-             0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   // top right
-             0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
-            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   // bottom left
-            -0.5f,  0.5f, 0.0f,   0.0f, 1.0f    // top left 
-        };
-        std::vector<unsigned int> indices = {  // note that we start from 0!
-            0, 1, 3,   // first triangle
-            1, 2, 3    // second triangle
-        };
-
-        std::vector<AttribPointer> attribPointers =
-        {
-            AttribPointer(0, 3),
-            AttribPointer(1, 2)
-        };
-        vertexArray = new VertexArray(vertices, attribPointers, indices);
     }
 
     void LoadShaderProgram()

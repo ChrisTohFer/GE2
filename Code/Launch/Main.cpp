@@ -2,6 +2,7 @@
 #include "Editor/Editor.h"
 #include "Platform/ImguiHelpers.h"
 #include "Platform/Window.h"
+#include "Graphics/Core.h"
 #include "Graphics/Temp.h"
 
 #include <thread>
@@ -20,9 +21,8 @@ int main()
 
     {
         auto key = window.CreateKey();
-        gfx::Init();
+        gfx::Initialise();
         ge2::InitialiseImgui(key);
-        gfx::LoadTriangle();
         gfx::LoadShaderProgram();
 
         assets::LoadAllAssets();
