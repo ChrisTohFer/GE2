@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.h"
 #include "Renderer.h"
 #include "Platform/Guid.h"
 #include "Platform/Window.h"
@@ -25,6 +26,8 @@ namespace ge2::gfx
         Renderer* Find(GUID);
         void Add(Renderer const&);
         void Remove(GUID);
+
+        void Draw(Camera const&, int screenX, int screenY);
 
     private:
         std::vector<Renderer*> m_renderers;

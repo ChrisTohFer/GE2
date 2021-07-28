@@ -17,8 +17,7 @@ namespace ge2
 
         Input input;
         Camera camera;
-        Transform camTrans;
-        camera.transform = &camTrans;
+        Transform& camTrans = camera.transform;
         camTrans.position = Vector3f{ 0.f, 0.f, -0.1f };
         camTrans.rotation = Quaternion::Identity();
 
