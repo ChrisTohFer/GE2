@@ -40,20 +40,42 @@ namespace Projects
         }
     }
 
-    //Engine projects
+    //Global projects
 
-    class EngineProject : DefaultProject
+    class GlobalProject : DefaultProject
     {
         public override void Configure(CustomConfiguration conf, CustomTarget target)
         {
-            conf.SolutionFolder = "1_Engine";
+            conf.SolutionFolder = "1_Global";
 
             base.Configure(conf, target);
         }
     }
 
     [Generate]
-    class AssetManager : EngineProject
+    class Global : GlobalProject
+    {
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            base.Configure(conf, target);
+            conf.SetLib();
+        }
+    }
+
+    //Platform projects
+
+    class PlatformProject : DefaultProject
+    {
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            conf.SolutionFolder = "2_Platform";
+
+            base.Configure(conf, target);
+        }
+    }
+
+    [Generate]
+    class AssetManager : PlatformProject
     {
         public override void Configure(CustomConfiguration conf, CustomTarget target)
         {
@@ -68,17 +90,36 @@ namespace Projects
     }
 
     [Generate]
-    class Global : EngineProject
+    class Platform : PlatformProject
     {
         public override void Configure(CustomConfiguration conf, CustomTarget target)
         {
             base.Configure(conf, target);
             conf.SetLib();
+
+            //Dependencies
+            conf.AddPrivateDependency<ThirdParty.Glad>(target);
+            conf.AddPrivateDependency<ThirdParty.Imgui>(target);
+
+            ThirdParty.OpenGL.AddAsDependency(conf, target);
+            ThirdParty.SFML.AddAsDependency(conf, target);
+        }
+    }
+
+    //System projects
+
+    class SystemProject : DefaultProject
+    {
+        public override void Configure(CustomConfiguration conf, CustomTarget target)
+        {
+            conf.SolutionFolder = "3_System";
+
+            base.Configure(conf, target);
         }
     }
 
     [Generate]
-    class Graphics : EngineProject
+    class Graphics : SystemProject
     {
         public override void Configure(CustomConfiguration conf, CustomTarget target)
         {
@@ -96,24 +137,9 @@ namespace Projects
         }
     }
 
-    [Generate]
-    class Platform : EngineProject
-    {
-        public override void Configure(CustomConfiguration conf, CustomTarget target)
-        {
-            base.Configure(conf, target);
-            conf.SetLib();
+    //Ungrouped
 
-            //Dependencies
-            conf.AddPrivateDependency<ThirdParty.Glad>(target);
-            conf.AddPrivateDependency<ThirdParty.Imgui>(target);
-
-            ThirdParty.OpenGL.AddAsDependency(conf, target);
-            ThirdParty.SFML.AddAsDependency(conf, target);
-        }
-    }
-
-    class TopLevelProject : DefaultProject
+    class UngroupedProject : DefaultProject
     {
         public override void Configure(CustomConfiguration conf, CustomTarget target)
         {
@@ -122,7 +148,7 @@ namespace Projects
     }
 
     [Generate]
-    class Editor : TopLevelProject
+    class Editor : UngroupedProject
     {
         public override void Configure(CustomConfiguration conf, CustomTarget target)
         {
@@ -139,7 +165,7 @@ namespace Projects
     }
 
     [Generate]
-    class Launch : TopLevelProject
+    class Launch : UngroupedProject
     {
         public override void Configure(CustomConfiguration conf, CustomTarget target)
         {
