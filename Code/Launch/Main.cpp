@@ -29,7 +29,7 @@ int main()
     }
 
     //RuntimeLoop(window);
-    EditorLoop(window);
+    RuntimeLoop(window);
 
     {
         auto key = window.CreateKey();

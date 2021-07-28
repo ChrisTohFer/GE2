@@ -19,7 +19,6 @@ namespace ge2::gfx
 
         gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
         glEnable(GL_DEPTH_TEST);
-        m_shapes.Initialise();
     }
 
     Core::~Core()

@@ -18,8 +18,5 @@ namespace ge2::gfx
 
         void ClearColour() const;
         void Display(plat::Window::WindowKey const& key) const;
-
-    private:
-        Shapes m_shapes;
     };
 }
