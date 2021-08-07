@@ -28,8 +28,8 @@ namespace ge2::assets
 
         Loader(ExtensionArray const& extensions);
         
-        LOADED_TYPE const* File(GUID guid);
-        LOADED_TYPE const* File(std::wstring_view const& filename);
+        LOADED_TYPE const* File(GUID guid) const;
+        LOADED_TYPE const* File(std::wstring_view const& filename) const;
 
         FileMap const& Files() const;
         ExtensionArray const& Extensions() const;
@@ -59,7 +59,7 @@ namespace ge2::assets
     }
 
     template<typename LOADED_TYPE, int NUM_EXTENSIONS>
-    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(GUID guid)
+    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(GUID guid) const
     {
         auto it = m_files.find(guid);
         if (it != m_files.end())
@@ -71,7 +71,7 @@ namespace ge2::assets
     }
 
     template<typename LOADED_TYPE, int NUM_EXTENSIONS>
-    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(std::wstring_view const& filename)
+    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(std::wstring_view const& filename) const
     {
         return File(GUIDFromFilename(filename));
     }

@@ -16,6 +16,7 @@ namespace ge2::gfx
     class Core
     {
     public:
+        Core() = default;
         Core(Core const&) = delete;
         Core(Core&&) = delete;
         Core& operator=(Core const&) = delete;

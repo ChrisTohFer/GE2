@@ -52,7 +52,7 @@ namespace ge2::gfx
 
     Core::~Core()
     {
-        for (int i = m_renderers.size() - 1; i >= 0; --i)
+        for (int i = int(m_renderers.size()) - 1; i >= 0; --i)
         {
             delete m_renderers[i];
             m_renderers.pop_back();
@@ -104,12 +104,13 @@ namespace ge2::gfx
 
     void Core::Draw(Camera const& camera, int screenX, int screenY)
     {
+        glViewport(0, 0, screenX, screenY);
         auto cameraTransform = Convert(camera.Matrix());
         cameraTransform = glm::perspective(camera.fovY, float(screenX) / float(screenY), camera.near, camera.far) * cameraTransform;
 
         for (auto& render : m_renderers)
         {
-            if (render->shader == nullptr || render->vertices == nullptr)
+            if (!render->IsValid())
             {
                 continue;   //Skip if we're missing shader or vertices
             }

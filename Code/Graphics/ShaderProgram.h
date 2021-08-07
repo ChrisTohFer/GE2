@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Platform/Guid.h"
+
+#include <string_view>
+
 namespace ge2::gfx
 {
 
@@ -13,20 +17,23 @@ namespace ge2::gfx
         ShaderProgram& operator=(ShaderProgram const&) = delete;
         ShaderProgram& operator=(ShaderProgram&&) noexcept;
 
-        bool CompiledWithoutError();
+        bool CompiledWithoutError() const;
 
         unsigned int Id() const;
-        void MakeActive();
+        void MakeActive() const;
 
-        void SetUniform(const char* name, float value);
-        void SetUniform(const char* name, bool value);
-        void SetUniform(const char* name, int value);
-        void SetUniform(const char* name, unsigned int value);
-        void SetUniform(const char* name, double value);
+        void SetUniform(const char* name, float value) const;
+        void SetUniform(const char* name, bool value) const;
+        void SetUniform(const char* name, int value) const;
+        void SetUniform(const char* name, unsigned int value) const;
+        void SetUniform(const char* name, double value) const;
 
     private:
         unsigned int m_id;
         int          m_success;
     };
+
+    ShaderProgram const* ShaderProgramFromGuid(GUID vertGuid, GUID fragGuid);
+    ShaderProgram const* ShaderProgramFromFilename(std::wstring_view const& vertexShader, std::wstring_view const& fragShader);
 
 }

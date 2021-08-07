@@ -12,10 +12,30 @@ namespace ge2::gfx
 {
     struct Renderer
     {
-        GUID                        guid;
-        Transform                   transform;
-        ShaderProgram*              shader;
-        VertexArray*                vertices;
-        std::array<Texture2D*, 8u>  textures;
+        GUID                                guid;
+        Transform                           transform;
+        ShaderProgram const*                shader;
+        VertexArray const*                  vertices;
+        std::array<Texture2D const*, 8u>    textures = { nullptr };
+
+        bool HasValidShader() const;
+        bool HasValidVertices() const;
+        bool IsValid() const;
     };
+
+    inline bool Renderer::HasValidShader() const
+    {
+        return shader && shader->CompiledWithoutError();
+    }
+
+    inline bool Renderer::HasValidVertices() const
+    {
+        return vertices && vertices->Valid();
+    }
+
+    //true if shader and vertices are valid, but doesn't check textures
+    inline bool Renderer::IsValid() const
+    {
+        return HasValidShader() && HasValidVertices();
+    }
 }

@@ -23,7 +23,6 @@ int main()
         auto key = window.CreateKey();
         gfx::Initialise();
         ge2::InitialiseImgui(key);
-        gfx::LoadShaderProgram();
 
         assets::LoadAllAssets();
     }

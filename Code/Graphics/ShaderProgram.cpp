@@ -1,16 +1,26 @@
 #include "ShaderProgram.h"
 #include "glad/glad.h"
+#include "AssetManager/CommonLoaders.h"
+#include "AssetManager/Metadata.h"
 
 #include <iostream>
+#include <map>
 
 namespace ge2::gfx
 {
 
     ShaderProgram::ShaderProgram(const char* vertexSource, const char* fragmentSource)
         : m_id(0)
+        , m_success(false)
     {
         //Vertex
         unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        if (vertexShader == 0)
+        {
+            std::cout << "Failed to create shader buffer - does this thread have access to openGL?\n";
+            return;
+        }
+
         glShaderSource(vertexShader, 1, &vertexSource, nullptr);
         glCompileShader(vertexShader);
 
@@ -86,7 +96,7 @@ namespace ge2::gfx
         return *this;
     }
 
-    bool ShaderProgram::CompiledWithoutError()
+    bool ShaderProgram::CompiledWithoutError() const
     {
         return m_success;
     }
@@ -96,44 +106,102 @@ namespace ge2::gfx
         return m_id;
     }
 
-    void ShaderProgram::MakeActive()
+    void ShaderProgram::MakeActive() const
     {
         glUseProgram(m_id);
     }
 
-    void ShaderProgram::SetUniform(const char* name, float value)
+    void ShaderProgram::SetUniform(const char* name, float value) const
     {
         auto uniformLocation = glGetUniformLocation(m_id, name);
         glUseProgram(m_id);
         glUniform1f(uniformLocation, value);
     }
 
-    void ShaderProgram::SetUniform(const char* name, bool value)
+    void ShaderProgram::SetUniform(const char* name, bool value) const
     {
         auto uniformLocation = glGetUniformLocation(m_id, name);
         glUseProgram(m_id);
         glUniform1i(uniformLocation, int(value));
     }
 
-    void ShaderProgram::SetUniform(const char* name, int value)
+    void ShaderProgram::SetUniform(const char* name, int value) const
     {
         auto uniformLocation = glGetUniformLocation(m_id, name);
         glUseProgram(m_id);
         glUniform1i(uniformLocation, value);
     }
 
-    void ShaderProgram::SetUniform(const char* name, unsigned int value)
+    void ShaderProgram::SetUniform(const char* name, unsigned int value) const
     {
         auto uniformLocation = glGetUniformLocation(m_id, name);
         glUseProgram(m_id);
         glUniform1ui(uniformLocation, value);
     }
 
-    void ShaderProgram::SetUniform(const char* name, double value)
+    void ShaderProgram::SetUniform(const char* name, double value) const
     {
         auto uniformLocation = glGetUniformLocation(m_id, name);
         glUseProgram(m_id);
         glUniform1d(uniformLocation, value);
+    }
+
+    namespace
+    {
+        struct ShaderProgramMap
+        {
+            ~ShaderProgramMap()
+            {
+                for (auto& element : shaderPrograms)
+                {
+                    delete element.second;
+                }
+            }
+
+            std::map<std::pair<GUID/*vert*/, GUID/*frag*/>, ShaderProgram*> shaderPrograms;
+        };
+        
+        ShaderProgramMap shaders;
+    }
+
+    ShaderProgram const* ShaderProgramFromGuid(GUID vertGuid, GUID fragGuid)
+    {
+        //Check shaders exist
+        if (vertGuid == NULL_GUID || fragGuid == NULL_GUID)
+        {
+            _ASSERT(false);         //Attempted to load a shader using a null guid - might have an incorrect filename
+            return nullptr;
+        }
+
+        auto& shaderPrograms = shaders.shaderPrograms;
+
+        auto iter = shaderPrograms.find(std::make_pair(vertGuid, fragGuid));
+        if (iter == shaderPrograms.end())
+        {
+            //Need to create the shaderprogram
+            auto vertSource = assets::TextLoader::Instance().File(vertGuid);
+            auto fragSource = assets::TextLoader::Instance().File(fragGuid);
+            
+            //Exit if source is missing (file 
+            if (vertSource == nullptr || fragSource == nullptr)
+            {
+                _ASSERT(false);     //Attmpted to load a shader with invalid guid - file doesn't exist or is wrong type
+                return nullptr;
+            }
+
+            //Create
+            shaderPrograms.emplace(std::make_pair(vertGuid, fragGuid), new ShaderProgram(vertSource->c_str(), fragSource->c_str()));
+            iter = shaderPrograms.find(std::make_pair(vertGuid, fragGuid));
+        }
+
+        return iter->second;
+    }
+
+    ShaderProgram const* ShaderProgramFromFilename(std::wstring_view const& vertexShader, std::wstring_view const& fragShader)
+    {
+        auto vertGuid = assets::GUIDFromFilename(vertexShader);
+        auto fragGuid = assets::GUIDFromFilename(fragShader);
+        return ShaderProgramFromGuid(vertGuid, fragGuid);
     }
 
 }

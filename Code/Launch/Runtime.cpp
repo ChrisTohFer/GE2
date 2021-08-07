@@ -1,4 +1,6 @@
+#include "Scene.h"
 #include "Graphics/Core.h"
+#include "Graphics/Shapes.h"
 #include "Graphics/Temp.h"
 #include "Platform/ImguiHelpers.h"
 #include "Platform/Window.h"
@@ -10,6 +12,19 @@
 
 namespace ge2
 {
+    void AddEntity(Scene& scene, Transform transform, bool crate)
+    {
+        gfx::Renderer renderer;
+        renderer.shader = gfx::ShaderProgramFromFilename(L"diffuse.vert", L"diffuse.frag");
+        renderer.textures[0] = gfx::TextureFromFilename(crate ? L"container.jpg" : L"awesomeface.png");
+        renderer.vertices = crate ? &gfx::Cube() : &gfx::Sprite();
+        renderer.transform = transform;
+        renderer.guid = CreateGuid();
+
+        renderer.shader->SetUniform("tex", 0);
+        scene.graphics.Add(renderer);
+    }
+
     void RuntimeLoop(plat::Window& window)
     {
         using namespace ge2;
@@ -21,9 +36,19 @@ namespace ge2
         camTrans.position = Vector3f{ 0.f, 0.f, -0.1f };
         camTrans.rotation = Quaternion::Identity();
 
-        Transform box;
-        Vector3f euler = Vector3f::Zero();
+        //Transform box;
+        //Vector3f euler = Vector3f::Zero();
 
+        Scene scene;
+        {
+            auto key = window.CreateKey();
+            AddEntity(scene, Transform{ Vector3f{ 0.f, 0.f, 2.f }}, true);
+            AddEntity(scene, Transform{ Vector3f{ 0.f, 0.f,-2.f }}, true);
+            AddEntity(scene, Transform{ Vector3f{ 2.f, 0.f, 0.f }}, false);
+            AddEntity(scene, Transform{ Vector3f{ -2.f,0.f, 0.f }}, true);
+            AddEntity(scene, Transform{ Vector3f{ 0.f, 2.f, 0.f }}, true);
+            AddEntity(scene, Transform{ Vector3f{ 0.f,-2.f, 0.f }}, true);
+        }
         int updateLengthMicroseconds = 1000000 / 60;
         WindowMessages messages;
         while (!messages.closeButtonPressed)
@@ -60,32 +85,23 @@ namespace ge2
             camTrans.rotation.Euler(camTrans.rotation.Euler() + deltaEuler);
             //camera.LookAt(Vector3f::Zero());
 
-            ImGui::Begin("BoxControl");
-            ImGui::SliderFloat3("Position", (float*)&box.position, -2.f, 2.f);
-            ImGui::SliderFloat3("Scale", (float*)&box.scale, -1.f, 1.f);
-            ImGui::SliderFloat3("Rotation", (float*)&euler, -PI, PI);
-            ImGui::End();
-            box.rotation.Euler(euler);
+            //ImGui::Begin("BoxControl");
+            //ImGui::SliderFloat3("Position", (float*)&box.position, -2.f, 2.f);
+            //ImGui::SliderFloat3("Scale", (float*)&box.scale, -1.f, 1.f);
+            //ImGui::SliderFloat3("Rotation", (float*)&euler, -PI, PI);
+            //ImGui::End();
+            //box.rotation.Euler(euler);
 
-            static float phase = 0.f;
-            phase += 0.015f;
-            box.rotation.NLerpTowards(Quaternion::Identity(), sinf(phase));
+            //static float phase = 0.f;
+            //phase += 0.015f;
+            //box.rotation.NLerpTowards(Quaternion::Identity(), sinf(phase));
             //box.rotation.LookDirection(-box.position);
-
-            gfx::UpdateCamera(camera);
 
             //Draw and display
             {
                 auto key = window.CreateKey();
                 gfx::ClearColour();
-
-                gfx::DrawTriangle(Vector3f{ 0.f, 0.f, 2.f }, Vector3f{ 0.f,0.f,1.f });
-                gfx::DrawTriangle(Vector3f{ 0.f, 0.f,-2.f }, Vector3f{ 0.f,0.f,0.f });
-                gfx::DrawTriangle(Vector3f{ 2.f, 0.f, 0.f }, Vector3f{ 0.f,0.f,0.f });
-                gfx::DrawTriangle(Vector3f{ -2.f,0.f, 0.f }, Vector3f{ 0.f,0.f,0.f });
-                gfx::DrawTriangle(Vector3f{ 0.f, 2.f, 0.f }, Vector3f{ 0.f,0.f,0.f });
-                gfx::DrawTriangle(Vector3f{ 0.f,-2.f, 0.f }, Vector3f{ 0.f,0.f,0.f });
-                gfx::DrawTriangle(box);
+                scene.graphics.Draw(camera, messages.width, messages.height);
 
                 ge2::ImguiEndFrame();    //Ui must be drawn last before display()
                 gfx::Display(key);

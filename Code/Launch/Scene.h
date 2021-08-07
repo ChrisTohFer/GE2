@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Graphics/Core.h"
 #include "Platform/Guid.h"
 
 namespace ge2
@@ -8,7 +9,7 @@ namespace ge2
     struct Scene
     {
         GUID id;
-        //System members
+        gfx::Core graphics;
 
         void update();
     };

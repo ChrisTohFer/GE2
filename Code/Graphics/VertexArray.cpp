@@ -4,11 +4,6 @@
 
 #include <limits>
 
-namespace
-{
-    constexpr unsigned int INVALID_ID = std::numeric_limits<unsigned int>::max();
-}
-
 namespace ge2::gfx
 {
 
@@ -95,7 +90,7 @@ namespace ge2::gfx
         if (elements.empty())
         {
             m_count = unsigned int(vertices.size() * sizeof(float)) / stride;
-            m_elementBufferId = INVALID_ID;
+            m_elementBufferId = 0;
             return;
         }
 
@@ -108,7 +103,7 @@ namespace ge2::gfx
     void VertexArray::Draw() const
     {
         glBindVertexArray(m_vertexArrayId);
-        if (m_elementBufferId == INVALID_ID)
+        if (m_elementBufferId == 0)
         {
             glDrawArrays(GL_TRIANGLES, 0, m_count);
         }
