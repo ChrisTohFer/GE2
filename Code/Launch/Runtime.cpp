@@ -101,7 +101,7 @@ namespace ge2
             {
                 auto key = window.CreateKey();
                 gfx::ClearColour();
-                scene.graphics.Draw(camera, messages.width, messages.height);
+                scene.Draw(camera, messages.width, messages.height);
 
                 ge2::ImguiEndFrame();    //Ui must be drawn last before display()
                 gfx::Display(key);
