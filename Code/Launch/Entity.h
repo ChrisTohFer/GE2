@@ -2,6 +2,7 @@
 
 #include "Global/Flags.h"
 #include "Global/Transform.h"
+#include "Graphics/Renderer.h"
 #include "Platform/Guid.h"
 
 namespace ge2
@@ -20,6 +21,7 @@ namespace ge2
         GUID            guid;
         ComponentFlags  componentFlags;
         Transform       transform;
+        gfx::Renderer   renderer;
     };
 
 

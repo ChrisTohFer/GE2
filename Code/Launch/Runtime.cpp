@@ -13,15 +13,16 @@ namespace ge2
 {
     void AddEntity(Scene& scene, Transform transform, bool crate)
     {
-        gfx::Renderer renderer;
-        renderer.shader = gfx::ShaderLoader::Instance().File(L"diffuse.shad");
-        renderer.textures[0] = gfx::TextureFromFilename(crate ? L"container.jpg" : L"awesomeface.png");
-        renderer.vertices = crate ? &gfx::Cube() : &gfx::Sprite();
-        renderer.transform = transform;
-        renderer.guid = CreateGuid();
+        Entity entity;
+        entity.transform = transform;
 
-        renderer.shader->SetUniform("tex", 0);
-        scene.graphics.Add(renderer);
+        entity.renderer.shader = gfx::ShaderLoader::Instance().File(L"diffuse.shad");
+        entity.renderer.textures[0] = gfx::TextureFromFilename(crate ? L"container.jpg" : L"awesomeface.png");
+        entity.renderer.vertices = crate ? &gfx::Cube() : &gfx::Sprite();
+
+        entity.renderer.shader->SetUniform("tex", 0);
+
+        scene.entities.push_back(std::move(entity));
     }
 
     void RuntimeLoop(plat::Window& window)

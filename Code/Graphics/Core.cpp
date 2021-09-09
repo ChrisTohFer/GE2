@@ -14,6 +14,14 @@ namespace
 {
     bool graphicsInitialised = false;
 
+    struct RendererInternal
+    {
+        ge2::Transform transform;
+        ge2::gfx::Renderer renderer;
+    };
+
+    std::vector<RendererInternal> renderers;
+
     static glm::mat4 Convert(ge2::Matrix4x4f m)
     {
         return {
@@ -50,75 +58,29 @@ namespace ge2::gfx
         key.Window()->display();
     }
 
-    Core::~Core()
+    void AddRenderer(Transform const& transform, Renderer const& renderer)
     {
-        for (int i = int(m_renderers.size()) - 1; i >= 0; --i)
-        {
-            delete m_renderers[i];
-            m_renderers.pop_back();
-        }
+        renderers.push_back({ transform, renderer });
     }
 
-    Renderer* Core::Find(GUID guid) const
-    {
-        for (auto& render : m_renderers)
-        {
-            if (render->guid == guid)
-            {
-                return render;
-            }
-        }
-
-        return nullptr;
-    }
-
-    void Core::Add(Renderer const& renderer)
-    {
-#ifdef _DEBUG
-        for (auto& render : m_renderers)
-        {
-            _ASSERT(render->guid != renderer.guid); //Tried to add renderer with pre-existing guid
-        }
-#endif
-
-        m_renderers.push_back(new Renderer(renderer));
-    }
-
-    void Core::Remove(GUID guid)
-    {
-        auto element = std::find_if(m_renderers.begin(), m_renderers.end(), [&](auto& elem)
-            {
-                return elem->guid == guid;
-            });
-
-        if (element != m_renderers.end())
-        {
-            std::swap(m_renderers.back(), *element);
-            m_renderers.pop_back();
-        }
-        else
-        {
-            _ASSERT(false); //Tried to remove renderer that doesn't exist
-        }
-    }
-
-    void Core::Draw(Camera const& camera, int screenX, int screenY) const
+    void Draw(Camera const& camera, int screenX, int screenY)
     {
         glViewport(0, 0, screenX, screenY);
         auto cameraTransform = Convert(camera.Matrix());
         cameraTransform = glm::perspective(camera.fovY, float(screenX) / float(screenY), camera.near, camera.far) * cameraTransform;
 
-        for (auto& render : m_renderers)
+        for (auto& renderInternal : renderers)
         {
-            if (!render->IsValid())
+            Renderer& render = renderInternal.renderer;
+            if (!render.IsValid())
             {
                 continue;   //Skip if we're missing shader or vertices
             }
 
-            auto& trans = render->transform;
-            auto& shaderProgram = *render->shader;
-            auto& verts = *render->vertices;
-            auto& textures = render->textures;
+            auto& trans = renderInternal.transform;
+            auto& shaderProgram = *render.shader;
+            auto& verts = *render.vertices;
+            auto& textures = render.textures;
             shaderProgram.MakeActive();
 
             glm::mat4 transform = Convert(trans.Matrix());
@@ -141,5 +103,7 @@ namespace ge2::gfx
 
             verts.Draw();
         }
+
+        renderers.clear();
     }
 }

@@ -13,24 +13,7 @@ namespace ge2::gfx
     void ClearColour();
     void Display(plat::Window::WindowKey const&);
 
-    class Core
-    {
-    public:
-        Core() = default;
-        Core(Core const&) = delete;
-        Core(Core&&) = delete;
-        Core& operator=(Core const&) = delete;
-        Core& operator=(Core&&) = delete;
 
-        ~Core();
-
-        Renderer* Find(GUID) const;
-        void Add(Renderer const&);
-        void Remove(GUID);
-
-        void Draw(Camera const&, int screenX, int screenY) const;
-
-    private:
-        std::vector<Renderer*> m_renderers;
-    };
+    void AddRenderer(Transform const&, Renderer const&);
+    void Draw(Camera const&, int screenX, int screenY);
 }

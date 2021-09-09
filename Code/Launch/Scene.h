@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/Core.h"
+#include "Graphics/Camera.h"
 #include "Platform/Guid.h"
 #include "Entity.h"
 
@@ -12,7 +12,6 @@ namespace ge2
     struct Scene
     {
         GUID                id;
-        gfx::Core           graphics;
         std::vector<Entity> entities;
 
         void Update();

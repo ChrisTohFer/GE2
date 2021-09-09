@@ -12,8 +12,6 @@ namespace ge2::gfx
 {
     struct Renderer
     {
-        GUID                                guid;
-        Transform                           transform;
         ShaderProgram const*                shader;
         VertexArray const*                  vertices;
         std::array<Texture2D const*, 8u>    textures = { nullptr };
