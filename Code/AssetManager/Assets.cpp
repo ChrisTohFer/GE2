@@ -18,27 +18,21 @@ namespace
         static LoaderMap map;
         return map;
     }
+}
 
-    bool LoadFile(Metadata& metadata)
+namespace ge2::assets
+{
+    void LoadFile(Metadata& metadata)
     {
-        if (metadata.loadStarted)
-        {
-            _ASSERT(metadata.loaded); //Circular dependency
-            return true;
-        }
-
-        for (auto& dependency : metadata.dependencies)
-        {
-            auto dependencyMetadata = GetMetadata(dependency);
-            _ASSERT(dependencyMetadata);      //Failed to load metadata of dependency
-            if (dependencyMetadata)
-            {
-                [[maybe_unused]] auto success = LoadFile(*dependencyMetadata);
-                _ASSERT(success);   //Failed to load dependency
-            }
-        }
-
         std::filesystem::path path(metadata.path);
+
+        if (metadata.loaded)
+        {
+            return;
+        }
+
+        metadata.loaded = true;
+
         if (path.has_extension())
         {
             auto extension = path.extension().wstring();
@@ -48,17 +42,12 @@ namespace
             if (loader != Loaders().end())
             {
                 loader->second->LoadFile(path, path.filename());
-                return true;
+                return;
             }
         }
         std::wcout << L"No loader for file:\t" << path << L"\n";
-
-        return false;
     }
-}
 
-namespace ge2::assets
-{
     void AddLoader(LoaderBase& loader, std::wstring_view const& extension)
     {
         Loaders().emplace(extension, &loader);

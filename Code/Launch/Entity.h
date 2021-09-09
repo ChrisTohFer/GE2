@@ -9,7 +9,9 @@ namespace ge2
     enum class ComponentType
     {
         RENDERER,
-        PHYSICS
+        PHYSICS,
+
+        NUM_TYPES
     };
     using ComponentFlags = Flags<ComponentType>;
 

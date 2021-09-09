@@ -59,7 +59,7 @@ namespace ge2::gfx
         }
     }
 
-    Renderer* Core::Find(GUID guid)
+    Renderer* Core::Find(GUID guid) const
     {
         for (auto& render : m_renderers)
         {
@@ -102,7 +102,7 @@ namespace ge2::gfx
         }
     }
 
-    void Core::Draw(Camera const& camera, int screenX, int screenY)
+    void Core::Draw(Camera const& camera, int screenX, int screenY) const
     {
         glViewport(0, 0, screenX, screenY);
         auto cameraTransform = Convert(camera.Matrix());

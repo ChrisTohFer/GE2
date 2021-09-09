@@ -3,7 +3,6 @@
 #include "Platform/ImguiHelpers.h"
 #include "Platform/Window.h"
 #include "Graphics/Core.h"
-#include "Graphics/Temp.h"
 
 #include <thread>
 
@@ -35,6 +34,8 @@ int main()
         ge2::ShutdownImgui();
     }
     window.Close();
+
+    assets::WriteMetadata();
     
     return 0;
 }

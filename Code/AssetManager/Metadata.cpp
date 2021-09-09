@@ -36,11 +36,6 @@ namespace ge2::assets
                 auto& metadata = entry.second;
                 output << guid << L" " << metadata.name;
 
-                for (auto const& dependency : metadata.dependencies)
-                {
-                    output << L" " << dependency;
-                }
-
                 output << L"\n";
             }
         }
@@ -79,7 +74,7 @@ namespace ge2::assets
                 {
                     //Create new data
                     guid = CreateGuid();
-                    updatedMap.emplace(guid, Metadata{ guid, name, {}, path.wstring(), path.extension().wstring() });
+                    updatedMap.emplace(guid, Metadata{ guid, name, path.wstring(), path.extension().wstring() });
                 }
             }
 
@@ -110,12 +105,6 @@ namespace ge2::assets
                 Metadata entry;
                 lineStream >> entry.guid;
                 lineStream >> entry.name;
-
-                GUID dependency;
-                while (lineStream >> dependency)
-                {
-                    entry.dependencies.push_back(dependency);
-                }
 
                 g_metadata.emplace(entry.guid, entry);
             }
@@ -151,8 +140,6 @@ namespace ge2::assets
             }
         }
 
-        _ASSERT(false); //Attempting to load non existing metadata
-
         return NULL_GUID;
     }
 
@@ -171,6 +158,19 @@ namespace ge2::assets
 
         _ASSERT(false); //Attempting to load non existing metadata
         
+        return nullptr;
+    }
+
+    Metadata* GetMetadata(std::wstring_view const& filename)
+    {
+        for (auto& entry : g_metadata)
+        {
+            if (entry.second.name == filename)
+            {
+                return &entry.second;
+            }
+        }
+
         return nullptr;
     }
 

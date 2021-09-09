@@ -24,11 +24,11 @@ namespace ge2::gfx
 
         ~Core();
 
-        Renderer* Find(GUID);
+        Renderer* Find(GUID) const;
         void Add(Renderer const&);
         void Remove(GUID);
 
-        void Draw(Camera const&, int screenX, int screenY);
+        void Draw(Camera const&, int screenX, int screenY) const;
 
     private:
         std::vector<Renderer*> m_renderers;

@@ -14,15 +14,13 @@ namespace ge2::assets
         //Read from metadata file
         GUID guid;
         std::wstring name;
-        std::vector<GUID> dependencies;
 
         //Determined at runtime
         std::wstring path;
         std::wstring extension;
         bool missing = false;
 
-        //Used during loading
-        bool loadStarted = false;   //Used to identify recursive dependencies
+        //
         bool loaded = false;
     };
 
@@ -37,6 +35,7 @@ namespace ge2::assets
     MetadataMap& GetAllMetadata();
 
     //Prefer storing GUIDs over pointers - pointers may be invalidated when refreshing metadata
+    Metadata* GetMetadata(std::wstring_view const&);
     Metadata* GetMetadata(GUID);
 
     Metadata* AddMetadata();

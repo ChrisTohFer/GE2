@@ -1,7 +1,6 @@
 #include "Scene.h"
 #include "Graphics/Core.h"
 #include "Graphics/Shapes.h"
-#include "Graphics/Temp.h"
 #include "Platform/ImguiHelpers.h"
 #include "Platform/Window.h"
 
@@ -15,7 +14,7 @@ namespace ge2
     void AddEntity(Scene& scene, Transform transform, bool crate)
     {
         gfx::Renderer renderer;
-        renderer.shader = gfx::ShaderProgramFromFilename(L"diffuse.vert", L"diffuse.frag");
+        renderer.shader = gfx::ShaderLoader::Instance().File(L"diffuse.shad");
         renderer.textures[0] = gfx::TextureFromFilename(crate ? L"container.jpg" : L"awesomeface.png");
         renderer.vertices = crate ? &gfx::Cube() : &gfx::Sprite();
         renderer.transform = transform;
@@ -60,7 +59,6 @@ namespace ge2
             //Frame start
             {
                 auto key = window.CreateKey();
-                gfx::Update(messages.width, messages.height);
                 ge2::ImguiBeginFrame(input);
             }
 

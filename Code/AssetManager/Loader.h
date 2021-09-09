@@ -11,6 +11,7 @@ namespace ge2::assets
 {
     //Forward dec
     void AddLoader(class LoaderBase& loader, std::wstring_view const& extension);
+    void LoadFile(Metadata& metadata);
     //
 
     class LoaderBase
@@ -28,6 +29,7 @@ namespace ge2::assets
 
         Loader(ExtensionArray const& extensions);
         
+        LOADED_TYPE const* File(Metadata& metadata) const;
         LOADED_TYPE const* File(GUID guid) const;
         LOADED_TYPE const* File(std::wstring_view const& filename) const;
 
@@ -59,9 +61,14 @@ namespace ge2::assets
     }
 
     template<typename LOADED_TYPE, int NUM_EXTENSIONS>
-    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(GUID guid) const
+    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(Metadata& metadata) const
     {
-        auto it = m_files.find(guid);
+        if (!metadata.loaded)
+        {
+            assets::LoadFile(metadata);
+        }
+
+        auto it = m_files.find(metadata.guid);
         if (it != m_files.end())
         {
             return &it->second;
@@ -71,9 +78,17 @@ namespace ge2::assets
     }
 
     template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(GUID guid) const
+    {
+        auto* metadata = GetMetadata(guid);
+        return metadata != nullptr ? File(*metadata) : nullptr;
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
     inline LOADED_TYPE const* Loader<LOADED_TYPE, NUM_EXTENSIONS>::File(std::wstring_view const& filename) const
     {
-        return File(GUIDFromFilename(filename));
+        auto* metadata = GetMetadata(filename);
+        return metadata != nullptr ? File(*metadata) : nullptr;
     }
 
     template<typename LOADED_TYPE, int NUM_EXTENSIONS>

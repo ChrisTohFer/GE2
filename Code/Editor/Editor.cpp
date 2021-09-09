@@ -3,7 +3,6 @@
 #include "Window.h" //Editor/window
 
 #include "Graphics/Core.h"
-#include "Graphics/Temp.h"
 #include "Platform/ImguiHelpers.h"
 #include "Platform/Window.h"
 
@@ -30,7 +29,6 @@ namespace ge2
             //Frame start
             {
                 auto key = window.CreateKey();
-                gfx::Update(messages.width, messages.height);
                 ge2::ImguiBeginFrame(input);
             }
 

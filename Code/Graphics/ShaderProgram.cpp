@@ -3,14 +3,52 @@
 #include "AssetManager/CommonLoaders.h"
 #include "AssetManager/Metadata.h"
 
+#include <fstream>
 #include <iostream>
 #include <map>
+
+namespace
+{
+    using namespace ge2;
+    using namespace gfx;
+
+    ShaderProgram EmptyShader()
+    {
+        return ShaderProgram(NULL_GUID, NULL_GUID, "", "");
+    }
+
+    ShaderProgram ShaderProgramFromGuid(GUID vertGuid, GUID fragGuid)
+    {
+        //Check shaders exist
+        if (vertGuid == NULL_GUID || fragGuid == NULL_GUID)
+        {
+            _ASSERT(false);         //Attempted to load a shader using a null guid - might have an incorrect filename
+            return EmptyShader();
+        }
+
+        //Need to create the shaderprogram
+        auto vertSource = assets::TextLoader::Instance().File(vertGuid);
+        auto fragSource = assets::TextLoader::Instance().File(fragGuid);
+
+        //Exit if source is missing (file doesn't exist or guid is wrong)
+        if (vertSource == nullptr || fragSource == nullptr)
+        {
+            _ASSERT(false);     //Attmpted to load a shader with invalid guid - file doesn't exist or is wrong type
+            return EmptyShader();
+        }
+
+        //Create
+        return ShaderProgram(vertGuid, fragGuid, vertSource->c_str(), fragSource->c_str());
+    }
+}
 
 namespace ge2::gfx
 {
 
-    ShaderProgram::ShaderProgram(const char* vertexSource, const char* fragmentSource)
-        : m_id(0)
+    ShaderProgram::ShaderProgram(GUID vertGuid, GUID fragGuid, const char* vertexSource, const char* fragmentSource)
+        : m_vertGuid(vertGuid)
+        , m_fragGuid(fragGuid)
+        , m_id(0)
         , m_success(false)
     {
         //Vertex
@@ -106,6 +144,16 @@ namespace ge2::gfx
         return m_id;
     }
 
+    GUID ShaderProgram::VertGuid() const
+    {
+        return m_vertGuid;
+    }
+
+    GUID ShaderProgram::FragGuid() const
+    {
+        return m_fragGuid;
+    }
+
     void ShaderProgram::MakeActive() const
     {
         glUseProgram(m_id);
@@ -146,61 +194,32 @@ namespace ge2::gfx
         glUniform1d(uniformLocation, value);
     }
 
-    namespace
-    {
-        struct ShaderProgramMap
-        {
-            ~ShaderProgramMap()
-            {
-                for (auto& element : shaderPrograms)
-                {
-                    delete element.second;
-                }
-            }
+    //Shaderloader
 
-            std::map<std::pair<GUID/*vert*/, GUID/*frag*/>, ShaderProgram*> shaderPrograms;
-        };
-        
-        ShaderProgramMap shaders;
+    ShaderLoader ShaderLoader::g_loader;
+
+    ShaderLoader::ShaderLoader()
+        : Loader({ L".shad" })
+    {
     }
 
-    ShaderProgram const* ShaderProgramFromGuid(GUID vertGuid, GUID fragGuid)
+    ShaderLoader const& ShaderLoader::Instance()
     {
-        //Check shaders exist
-        if (vertGuid == NULL_GUID || fragGuid == NULL_GUID)
-        {
-            _ASSERT(false);         //Attempted to load a shader using a null guid - might have an incorrect filename
-            return nullptr;
-        }
-
-        auto& shaderPrograms = shaders.shaderPrograms;
-
-        auto iter = shaderPrograms.find(std::make_pair(vertGuid, fragGuid));
-        if (iter == shaderPrograms.end())
-        {
-            //Need to create the shaderprogram
-            auto vertSource = assets::TextLoader::Instance().File(vertGuid);
-            auto fragSource = assets::TextLoader::Instance().File(fragGuid);
-            
-            //Exit if source is missing (file 
-            if (vertSource == nullptr || fragSource == nullptr)
-            {
-                _ASSERT(false);     //Attmpted to load a shader with invalid guid - file doesn't exist or is wrong type
-                return nullptr;
-            }
-
-            //Create
-            shaderPrograms.emplace(std::make_pair(vertGuid, fragGuid), new ShaderProgram(vertSource->c_str(), fragSource->c_str()));
-            iter = shaderPrograms.find(std::make_pair(vertGuid, fragGuid));
-        }
-
-        return iter->second;
+        return g_loader;
     }
 
-    ShaderProgram const* ShaderProgramFromFilename(std::wstring_view const& vertexShader, std::wstring_view const& fragShader)
+    ShaderProgram ShaderLoader::Load(std::wstring const& file) const
     {
-        auto vertGuid = assets::GUIDFromFilename(vertexShader);
-        auto fragGuid = assets::GUIDFromFilename(fragShader);
+        std::ifstream fileIn(file);
+
+        if (fileIn.bad())
+        {
+            return EmptyShader();
+        }
+
+        GUID vertGuid, fragGuid;
+        fileIn >> vertGuid >> fragGuid;
+
         return ShaderProgramFromGuid(vertGuid, fragGuid);
     }
 
