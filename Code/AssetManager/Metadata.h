@@ -30,6 +30,7 @@ namespace ge2::assets
     void WriteMetadata();
 
     GUID GUIDFromFilename(std::wstring_view const&);
+    GUID GUIDFromAsset(void*);
     std::wstring FilenameFromGUID(GUID);
 
     MetadataMap& GetAllMetadata();
@@ -37,6 +38,7 @@ namespace ge2::assets
     //Prefer storing GUIDs over pointers - pointers may be invalidated when refreshing metadata
     Metadata* GetMetadata(std::wstring_view const&);
     Metadata* GetMetadata(GUID);
+    Metadata* GetMetadata(void*);   //Get metadata from pointer to asset
 
     Metadata* AddMetadata();
     void RemoveMetadata(GUID);

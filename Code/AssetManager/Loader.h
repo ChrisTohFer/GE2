@@ -17,6 +17,9 @@ namespace ge2::assets
     class LoaderBase
     {
     public:
+        virtual GUID GUIDFromAsset(void*) const = 0;
+        virtual bool Contains(void*) const = 0;
+        virtual bool Contains(GUID) const = 0;
         virtual void LoadFile(std::wstring const& file, std::wstring const& filename) = 0;
     };
 
@@ -38,6 +41,9 @@ namespace ge2::assets
 
         bool SupportsExtension(std::wstring const&) const;
 
+        GUID GUIDFromAsset(void*) const override;
+        bool Contains(void*) const override;
+        bool Contains(GUID) const override;
         void LoadFile(std::wstring const& file, std::wstring const& filename) final;
 
     protected:
@@ -114,6 +120,39 @@ namespace ge2::assets
             }
         }
         return false;
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline GUID Loader<LOADED_TYPE, NUM_EXTENSIONS>::GUIDFromAsset(void* asset) const
+    {
+        for (auto& element : m_files)
+        {
+            if (&element.second == asset)
+            {
+                return element.first;
+            }
+        }
+        return NULL_GUID;
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline bool Loader<LOADED_TYPE, NUM_EXTENSIONS>::Contains(void* asset) const
+    {
+        for (auto& element : m_files)
+        {
+            if (&element.second == asset)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    template<typename LOADED_TYPE, int NUM_EXTENSIONS>
+    inline bool Loader<LOADED_TYPE, NUM_EXTENSIONS>::Contains(GUID guid) const
+    {
+        return m_files.find(guid) != m_files.end();
     }
 
     template<typename LOADED_TYPE, int NUM_EXTENSIONS>

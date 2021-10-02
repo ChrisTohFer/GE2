@@ -7,21 +7,14 @@
 #include <iostream>
 #include <unordered_map>
 
-namespace
+namespace ge2::assets
 {
-    using namespace ge2::assets;
-
-    //Map extensions to appropriate loader
-    using LoaderMap = std::unordered_map<std::wstring_view, LoaderBase*>;
     LoaderMap& Loaders()
     {
         static LoaderMap map;
         return map;
     }
-}
 
-namespace ge2::assets
-{
     void LoadFile(Metadata& metadata)
     {
         std::filesystem::path path(metadata.path);

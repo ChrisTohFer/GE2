@@ -1,5 +1,6 @@
 #include "Metadata.h"
 
+#include "Assets.h"
 #include "Loader.h"
 #include "Paths.h"
 
@@ -143,6 +144,16 @@ namespace ge2::assets
         return NULL_GUID;
     }
 
+    GUID GUIDFromAsset(void* asset)
+    {
+        auto* metadata = GetMetadata(asset);
+        if (metadata != nullptr)
+        {
+            return metadata->guid;
+        }
+        return NULL_GUID;
+    }
+
     MetadataMap& GetAllMetadata()
     {
         return g_metadata;
@@ -169,6 +180,16 @@ namespace ge2::assets
             {
                 return &entry.second;
             }
+        }
+
+        return nullptr;
+    }
+
+    Metadata* GetMetadata(void* asset)
+    {
+        for (auto const& loader : Loaders())
+        {
+            return GetMetadata(loader.second->GUIDFromAsset(asset));
         }
 
         return nullptr;
